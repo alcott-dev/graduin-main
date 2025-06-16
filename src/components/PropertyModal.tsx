@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, MapPin, Wifi, Car, Shield, Bed } from 'lucide-react';
+import { X, MapPin, Wifi, Car, Shield, Bed, ExternalLink } from 'lucide-react';
 
 interface PropertyModalProps {
   property: any;
@@ -31,6 +31,12 @@ const PropertyModal = ({ property, onClose }: PropertyModalProps) => {
   const prevImage = () => {
     if (propertyData?.images) {
       setCurrentImageIndex((prev) => (prev - 1 + propertyData.images.length) % propertyData.images.length);
+    }
+  };
+
+  const handleViewFullGallery = () => {
+    if (propertyData.link) {
+      window.open(propertyData.link, '_blank');
     }
   };
 
@@ -90,21 +96,35 @@ const PropertyModal = ({ property, onClose }: PropertyModalProps) => {
                 </>
               )}
             </div>
-            {propertyData.images.length > 1 && (
-              <div className="flex gap-2 mt-4 overflow-x-auto">
-                {propertyData.images.map((image: string, index: number) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`${propertyData.title} ${index + 1}`}
-                    className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${
-                      index === currentImageIndex ? 'ring-2 ring-purple-500' : ''
-                    }`}
-                    onClick={() => setCurrentImageIndex(index)}
-                  />
-                ))}
-              </div>
-            )}
+            
+            {/* Gallery thumbnails and View Full Gallery button */}
+            <div className="flex items-center justify-between mt-4">
+              {propertyData.images.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto flex-1">
+                  {propertyData.images.map((image: string, index: number) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`${propertyData.title} ${index + 1}`}
+                      className={`w-20 h-20 object-cover rounded-lg cursor-pointer ${
+                        index === currentImageIndex ? 'ring-2 ring-purple-500' : ''
+                      }`}
+                      onClick={() => setCurrentImageIndex(index)}
+                    />
+                  ))}
+                </div>
+              )}
+              
+              {propertyData.link && (
+                <button
+                  onClick={handleViewFullGallery}
+                  className="flex items-center gap-2 bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition-colors ml-4"
+                >
+                  <ExternalLink size={16} />
+                  View Full Gallery
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Property Details */}
@@ -146,13 +166,20 @@ const PropertyModal = ({ property, onClose }: PropertyModalProps) => {
           {/* Google Maps */}
           <div className="mb-6">
             <h3 className="font-semibold text-slate-800 mb-3">Location</h3>
-            <div className="w-full h-64 bg-slate-100 rounded-xl flex items-center justify-center">
-              <div className="text-center">
-                <MapPin size={48} className="text-slate-400 mx-auto mb-2" />
-                <p className="text-slate-500">Map view of {propertyData.address || 'Address unavailable'}</p>
-                <p className="text-xs text-slate-400 mt-1">Interactive map would be integrated here</p>
+            {propertyData.mapEmbed ? (
+              <div 
+                className="w-full h-64 rounded-xl overflow-hidden"
+                dangerouslySetInnerHTML={{ __html: propertyData.mapEmbed }}
+              />
+            ) : (
+              <div className="w-full h-64 bg-slate-100 rounded-xl flex items-center justify-center">
+                <div className="text-center">
+                  <MapPin size={48} className="text-slate-400 mx-auto mb-2" />
+                  <p className="text-slate-500">Map view of {propertyData.address || 'Address unavailable'}</p>
+                  <p className="text-xs text-slate-400 mt-1">Interactive map would be integrated here</p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Action Buttons */}

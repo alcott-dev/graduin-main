@@ -32,6 +32,9 @@ const Index = () => {
       };
       
       setCurrentPage(pageMap[page] || 'home');
+      
+      // Scroll to top when page changes
+      window.scrollTo(0, 0);
     };
 
     window.addEventListener('changePage', handlePageChange);
@@ -40,6 +43,11 @@ const Index = () => {
       window.removeEventListener('changePage', handlePageChange);
     };
   }, []);
+
+  // Scroll to top when page changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage]);
 
   const renderCurrentPage = () => {
     switch (currentPage) {

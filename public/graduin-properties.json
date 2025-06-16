@@ -1,99 +1,105 @@
 [
     {
         "title": "9 Guildford Street Brixton Johannesburg 2092",
-        "image": "https://i.postimg.cc/2y2X2sv6/home.png",
+        "image": "https://i.postimg.cc/kM0f7W3j/9-guilford-street-thumbnail.jpg",
         "gallery": [
-            "https://i.postimg.cc/2y2X2sv6/home.png",
+            "https://i.postimg.cc/kM0f7W3j/9-guilford-street-thumbnail.jpg",
             "https://i.postimg.cc/qBWMRGX3/education.png",
             "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
         ],
         "address": "9 Guildford Street, Brixton, Johannesburg, 2092",
         "price": "R3,500/month",
         "features": ["Furnished", "Wi-Fi", "Security"],
-        "description": "Minutes from UJ APK and Brixton Shopping Centre.",
+        "description": "If you are looking for Accommodation in Brixton that's a few minutes' walk to UJ APK, 5 minutes walk to Brixton Shopping Centre and local shops, we have you covered.",
         "link": "https://graduin.com/blog/2020/12/05/9-guildford-street-brixton-johannesburg-2092/",
-        "tag": "Premium"
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=9+Guildford+Street+Brixton+Johannesburg+2092&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
         "title": "40A Fulham Road Brixton Johannesburg 2092",
-        "image": "https://i.postimg.cc/qBWMRGX3/education.png",
+        "image": "https://i.postimg.cc/dtGn3DJJ/40-A-Fullham001-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/qBWMRGX3/education.png",
+            "https://i.postimg.cc/dtGn3DJJ/40-A-Fullham001-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
         ],
         "address": "40A Fulham Road, Brixton, Johannesburg, 2092",
         "price": "R2,800/month",
         "features": ["Shared Kitchen", "Study Area", "Laundry"],
-        "description": "Student commune, single or sharing room options.",
+        "description": "Student Commune available in Fulham road Brixton, Johannesburg. We have a fabulous student commune, single or sharing room—the choice is yours.",
         "link": "https://graduin.com/blog/2020/12/05/40a-fulham-road-brixton-johannesburg-2092/",
-        "tag": "Premium"
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=40A+Fulham+Road+Brixton+Johannesburg+2092&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
         "title": "18 Bernard Street Sophiatown Johannesburg",
-        "image": "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+        "image": "https://i.postimg.cc/XY3LC3vd/18-benard-street-1-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+            "https://i.postimg.cc/XY3LC3vd/18-benard-street-1-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
         "address": "18 Bernard Street, Sophiatown, Johannesburg",
         "price": "R4,200/month",
         "features": ["Fully Furnished", "Reception", "24/7 Security"],
-        "description": "Double-storey fully furnished with reception area.",
+        "description": "Calling all young professionals and students alike, have we got news for you, This stunning double storey property is fully furnished, with a reception area.",
         "link": "https://graduin.com/blog/2020/12/05/18-bernard-street-sophiatown-johannesburg/",
-        "tag": "Premium"
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=18+Bernard+Street+Sophiatown+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
         "title": "North Cliff Terrace Complex",
-        "image": "https://i.postimg.cc/2y2X2sv6/home.png",
+        "image": "https://i.postimg.cc/XvP9Q0n2/north-cliff-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/2y2X2sv6/home.png",
+            "https://i.postimg.cc/XvP9Q0n2/north-cliff-300x300.jpg",
             "https://i.postimg.cc/qBWMRGX3/education.png",
             "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
         ],
         "address": "North Cliff Terrace Complex, Johannesburg",
         "price": "R8,300/month",
         "features": ["3 Bedroom", "Pool", "Parking", "Entertainment Area"],
-        "description": "3 BR/2 BA, R8 300 p/m; includes parking, pool, entertainment area.",
+        "description": "3 Bedroom, 2 Bathroom Apartment R 8300 p/m…",
         "link": "https://graduin.com/blog/2020/12/05/north-cliff-terrace-complex/",
-        "tag": "Premium"
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=North+Cliff+Terrace+Complex+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
         "title": "89 Collins Street Brixton Johannesburg 2092",
-        "image": "https://i.postimg.cc/qBWMRGX3/education.png",
+        "image": "https://i.postimg.cc/pVhsNq7h/89-collins-street-brixton-2-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/qBWMRGX3/education.png",
+            "https://i.postimg.cc/pVhsNq7h/89-collins-street-brixton-2-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
         ],
         "address": "89 Collins Street, Brixton, Johannesburg, 2092",
         "price": "R3,200/month",
         "features": ["Fully Furnished", "Security", "Shared Facilities"],
-        "description": "Fully furnished, secured commune.",
-        "link": "https://graduin.com/blog/2020/12/05/westdene-property/",
-        "tag": "Premium"
+        "description": "New Roof Properties provides you with affordable, secured commune…",
+        "link": "",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=89+Collins+Street+Brixton+Johannesburg+2092&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
-        "title": "Westedene Property",
-        "image": "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+        "title": "Westdene Property",
+        "image": "https://i.postimg.cc/ZntpzFBp/westedene001-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+            "https://i.postimg.cc/ZntpzFBp/westedene001-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
-        "address": "Westedene, Johannesburg",
+        "address": "Westdene, Johannesburg",
         "price": "R12,000/month",
         "features": ["3 Bedroom", "Utilities Included", "Wi-Fi", "House"],
         "description": "3 BR house, R12k incl. utilities & Wi-Fi.",
-        "link": "https://graduin.com/blog/2020/12/05/aukland-property-1/",
-        "tag": "Premium"
+        "link": "https://graduin.com/blog/2020/12/05/westdene-property/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Westdene+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
         "title": "Auckland Johannesburg Property 1",
-        "image": "https://i.postimg.cc/2y2X2sv6/home.png",
+        "image": "https://i.postimg.cc/rpsS1p20/JHB-Property1-300x300.png",
         "gallery": [
-            "https://i.postimg.cc/2y2X2sv6/home.png",
+            "https://i.postimg.cc/rpsS1p20/JHB-Property1-300x300.png",
             "https://i.postimg.cc/qBWMRGX3/education.png",
             "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
         ],
@@ -101,119 +107,127 @@
         "price": "R3,800/month",
         "features": ["Near Universities", "Safe Area", "Transport Links"],
         "description": "Safe accommodation near UJ, WITS, Rosbank College, Boston City.",
-        "link": "https://graduin.com/blog/2020/12/05/auckland-property-2/",
-        "tag": "Premium"
+        "link": "https://graduin.com/blog/2020/12/05/aukland-property-1/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Auckland+Park+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
-        "title": "Johannesburg Property",
-        "image": "https://i.postimg.cc/qBWMRGX3/education.png",
+        "title": "Auckland Johannesburg Property 2",
+        "image": "https://i.postimg.cc/fW9fqktY/aukland-02-300x300.png",
         "gallery": [
-            "https://i.postimg.cc/qBWMRGX3/education.png",
+            "https://i.postimg.cc/fW9fqktY/aukland-02-300x300.png",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
         ],
-        "address": "Johannesburg Central",
+        "address": "Auckland Park, Johannesburg",
         "price": "R4,500/month",
         "features": ["Furnished", "Uncapped Wi-Fi", "Parking", "Cleaning Service"],
         "description": "Furnished, uncapped Wi-Fi, parking, utilities, caretaker, weekly cleaning.",
+        "link": "https://graduin.com/blog/2020/12/05/auckland-property-2/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Auckland+Park+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
+    },
+    {
+        "title": "Auckland Johannesburg Property 3",
+        "image": "https://i.postimg.cc/wML51b8w/aukland-03-300x300.png",
+        "gallery": [
+            "https://i.postimg.cc/wML51b8w/aukland-03-300x300.png",
+            "https://i.postimg.cc/2y2X2sv6/home.png",
+            "https://i.postimg.cc/qBWMRGX3/education.png"
+        ],
+        "address": "Auckland Park, Johannesburg",
+        "price": "R5,200/month",
+        "features": ["2 Bedroom", "Built-in Cupboards", "Apartment"],
+        "description": "2 BR apt, built-in cupboards.",
         "link": "https://graduin.com/blog/2020/12/05/auckland-property-3/",
-        "tag": "Premium"
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Auckland+Park+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
+    },
+    {
+        "title": "Johannesburg Property",
+        "image": "https://i.postimg.cc/50ZqNWGH/Brixton-Johannesburg-Property-II-300x300.jpg",
+        "gallery": [
+            "https://i.postimg.cc/50ZqNWGH/Brixton-Johannesburg-Property-II-300x300.jpg",
+            "https://i.postimg.cc/qBWMRGX3/education.png",
+            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
+        ],
+        "address": "Johannesburg Central",
+        "price": "R3,000/month",
+        "features": ["Student Accommodation", "Security", "Transport"],
+        "description": "Student accommodation in Doornfontein area.",
+        "link": "https://graduin.com/blog/2020/12/05/johannesburg-property/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Johannesburg+South+Parktown&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
         "title": "Melody Complex Property",
-        "image": "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+        "image": "https://i.postimg.cc/VkDq0CpP/melody-comp1-2.jpg",
         "gallery": [
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+            "https://i.postimg.cc/VkDq0CpP/melody-comp1-2.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
         "address": "Melody Complex, Johannesburg",
-        "price": "R5,200/month",
-        "features": ["2 Bedroom", "Built-in Cupboards", "Apartment"],
-        "description": "2 BR apt, built-in cupboards.",
-        "link": "https://graduin.com/blog/2020/12/05/johannesburg-property/",
-        "tag": "Premium"
-    },
-    {
-        "title": "Doornfontein Property",
-        "image": "https://i.postimg.cc/2y2X2sv6/home.png",
-        "gallery": [
-            "https://i.postimg.cc/2y2X2sv6/home.png",
-            "https://i.postimg.cc/qBWMRGX3/education.png",
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
-        ],
-        "address": "Doornfontein, Johannesburg",
-        "price": "R3,000/month",
-        "features": ["Student Accommodation", "Security", "Transport"],
-        "description": "Student accommodation in Doornfontein area.",
-        "link": "https://graduin.com/blog/2020/12/05/melody-complex-property/",
-        "tag": "Premium"
-    },
-    {
-        "title": "Doornfontein Braamfontein Properties",
-        "image": "https://i.postimg.cc/qBWMRGX3/education.png",
-        "gallery": [
-            "https://i.postimg.cc/qBWMRGX3/education.png",
-            "https://i.postimg.cc/2y2X2sv6/home.png",
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
-        ],
-        "address": "Doornfontein/Braamfontein, Johannesburg",
         "price": "R3,500/month",
         "features": ["Near Universities", "Public Transport", "Security"],
         "description": "Properties in Doornfontein and Braamfontein areas.",
-        "link": "https://graduin.com/blog/2020/12/05/doornfontein-property/",
-        "tag": "Premium"
+        "link": "https://graduin.com/blog/2020/12/05/melody-complex-property/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Melody+Complex+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
-        "title": "Doornfontein Braamfontein Property 2",
-        "image": "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+        "title": "Doornfontein Property",
+        "image": "https://i.postimg.cc/qMHXP0yS/Doomfontein-prop-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+            "https://i.postimg.cc/qMHXP0yS/Doomfontein-prop-300x300.jpg",
+            "https://i.postimg.cc/2y2X2sv6/home.png",
+            "https://i.postimg.cc/qBWMRGX3/education.png"
+        ],
+        "address": "Doornfontein, Johannesburg",
+        "price": "R3,200/month",
+        "features": ["Student Housing", "Shared Facilities", "Security"],
+        "description": "Additional properties in Doornfontein and Braamfontein.",
+        "link": "https://graduin.com/blog/2020/12/05/doornfontein-property/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Doornfontein+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
+    },
+    {
+        "title": "Doornfontein Braamfontein Properties",
+        "image": "https://i.postimg.cc/9QWPfpxB/Doornfontein-or-Braamfontein-Property-300x300.jpg",
+        "gallery": [
+            "https://i.postimg.cc/9QWPfpxB/Doornfontein-or-Braamfontein-Property-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
         "address": "Doornfontein/Braamfontein, Johannesburg",
-        "price": "R3,200/month",
-        "features": ["Student Housing", "Shared Facilities", "Security"],
-        "description": "Additional properties in Doornfontein and Braamfontein.",
-        "link": "https://graduin.com/blog/2020/12/05/doornfontein-braamfontein-properties/",
-        "tag": "Premium"
-    },
-    {
-        "title": "Rooms to Let Auckland Park",
-        "image": "https://i.postimg.cc/2y2X2sv6/home.png",
-        "gallery": [
-            "https://i.postimg.cc/2y2X2sv6/home.png",
-            "https://i.postimg.cc/qBWMRGX3/education.png",
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
-        ],
-        "address": "Auckland Park, Johannesburg",
         "price": "R2,500/month",
         "features": ["Rooms to Let", "Shared Kitchen", "Wi-Fi"],
         "description": "Affordable rooms to let in Auckland Park.",
-        "link": "https://graduin.com/blog/2020/12/05/doornfontein-braamfontein-property-2/",
-        "tag": "Premium"
+        "link": "https://graduin.com/blog/2020/12/05/doornfontein-braamfontein-properties/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Doornfontein+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
-        "title": "Rooms to Let Auckland Park Sunbury House",
-        "image": "https://i.postimg.cc/qBWMRGX3/education.png",
+        "title": "Doornfontein Braamfontein Property 2",
+        "image": "https://i.postimg.cc/CLCHYt41/Doornfontein-or-Braamfontein-Property-2-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/qBWMRGX3/education.png",
+            "https://i.postimg.cc/CLCHYt41/Doornfontein-or-Braamfontein-Property-2-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
+            "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
-        "address": "Sunbury House, Auckland Park, Johannesburg",
+        "address": "Braamfontein/Doornfontein, Johannesburg",
         "price": "R2,800/month",
         "features": ["Sunbury House", "Student Residence", "Security"],
         "description": "Student accommodation at Sunbury House, Auckland Park.",
-        "link": "https://graduin.com/blog/2020/12/05/rooms-to-let-auckland-park/",
-        "tag": "Premium"
+        "link": "https://graduin.com/blog/2020/12/05/doornfontein-braamfontein-property-2/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Braamfontein+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
-        "title": "Auckland Park Property III",
-        "image": "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+        "title": "Rooms to Let Auckland Park",
+        "image": "https://i.postimg.cc/g2DDy5w5/Auckland-Park-Rooms-To-Let-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+            "https://i.postimg.cc/g2DDy5w5/Auckland-Park-Rooms-To-Let-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
@@ -221,44 +235,79 @@
         "price": "R3,100/month",
         "features": ["Near UJ", "Transport Links", "Security"],
         "description": "Additional Auckland Park property near universities.",
-        "link": "https://graduin.com/blog/2020/12/05/rooms-to-let-auckland-park-sunbury-house/",
-        "tag": "Premium"
+        "link": "https://graduin.com/blog/2020/12/05/rooms-to-let-auckland-park/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Auckland+Park+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
-        "title": "Brixton Johannesburg Property",
-        "image": "https://i.postimg.cc/2y2X2sv6/home.png",
+        "title": "Rooms to Let Auckland Park Sunbury House",
+        "image": "https://i.postimg.cc/85FmSzyQ/Auckland-Property-Sunbury-House-300x300.jpg",
         "gallery": [
+            "https://i.postimg.cc/85FmSzyQ/Auckland-Property-Sunbury-House-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
-            "https://i.postimg.cc/qBWMRGX3/education.png",
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
+            "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
-        "address": "Brixton, Johannesburg",
+        "address": "Sunbury House, Auckland Park, Johannesburg",
         "price": "R3,300/month",
         "features": ["Brixton Location", "Student Friendly", "Transport"],
         "description": "Student accommodation in Brixton area.",
-        "link": "https://graduin.com/blog/2020/12/05/auckland-park-property-iii/",
-        "tag": "Premium"
+        "link": "https://graduin.com/blog/2020/12/05/rooms-to-let-auckland-park-sunbury-house/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Sunbury+House+Auckland+Park+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
-        "title": "Pritchard Place Listing",
-        "image": "https://i.postimg.cc/qBWMRGX3/education.png",
+        "title": "Auckland Park Property III",
+        "image": "https://i.postimg.cc/Ls8VxTLs/Auckland-Park-Johannesburg-Property-III-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/qBWMRGX3/education.png",
+            "https://i.postimg.cc/Ls8VxTLs/Auckland-Park-Johannesburg-Property-III-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
+            "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
-        "address": "Pritchard Place, Johannesburg",
+        "address": "Auckland Park, Johannesburg",
         "price": "R4,000/month",
         "features": ["City Location", "Modern Facilities", "Security"],
         "description": "Modern accommodation at Pritchard Place.",
+        "link": "https://graduin.com/blog/2020/12/05/auckland-park-property-iii/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Auckland+Park+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
+    },
+    {
+        "title": "Brixton Johannesburg Property",
+        "image": "https://i.postimg.cc/50ZqNWGH/Brixton-Johannesburg-Property-II-300x300.jpg",
+        "gallery": [
+            "https://i.postimg.cc/50ZqNWGH/Brixton-Johannesburg-Property-II-300x300.jpg",
+            "https://i.postimg.cc/2y2X2sv6/home.png",
+            "https://i.postimg.cc/qBWMRGX3/education.png"
+        ],
+        "address": "Brixton, Johannesburg",
+        "price": "R5,500/month",
+        "features": ["Premium Residence", "Full Facilities", "24/7 Security"],
+        "description": "Premium student residence with full facilities.",
         "link": "https://graduin.com/blog/2020/12/05/brixton-johannesburg-property/",
-        "tag": "Premium"
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Brixton+Johannesburg+2092&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
+    },
+    {
+        "title": "Pritchard Place Listing",
+        "image": "https://i.postimg.cc/Y9mYPy9t/pritchard-place-300x300.jpg",
+        "gallery": [
+            "https://i.postimg.cc/Y9mYPy9t/pritchard-place-300x300.jpg",
+            "https://i.postimg.cc/2y2X2sv6/home.png",
+            "https://i.postimg.cc/qBWMRGX3/education.png"
+        ],
+        "address": "Pritchard Place, Johannesburg",
+        "price": "R4,800/month",
+        "features": ["Student Complex", "Study Areas", "Recreation"],
+        "description": "Modern student residence complex with all amenities.",
+        "link": "https://graduin.com/blog/2020/12/05/pritchard-place-listing/",
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=Pritchard+Place+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     },
     {
         "title": "The Hunstanton Residence",
-        "image": "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+        "image": "https://i.postimg.cc/rs1WV0xb/The-Hunstanton-Residence-300x300.jpg",
         "gallery": [
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png",
+            "https://i.postimg.cc/rs1WV0xb/The-Hunstanton-Residence-300x300.jpg",
             "https://i.postimg.cc/2y2X2sv6/home.png",
             "https://i.postimg.cc/qBWMRGX3/education.png"
         ],
@@ -266,22 +315,8 @@
         "price": "R5,500/month",
         "features": ["Premium Residence", "Full Facilities", "24/7 Security"],
         "description": "Premium student residence with full facilities.",
-        "link": "https://graduin.com/blog/2020/12/05/pritchard-place-listing/",
-        "tag": "Premium"
-    },
-    {
-        "title": "Student Residence Complex",
-        "image": "https://i.postimg.cc/2y2X2sv6/home.png",
-        "gallery": [
-            "https://i.postimg.cc/2y2X2sv6/home.png",
-            "https://i.postimg.cc/qBWMRGX3/education.png",
-            "https://i.postimg.cc/bwm6H2tP/Graduin-Logo.png"
-        ],
-        "address": "Johannesburg Central",
-        "price": "R4,800/month",
-        "features": ["Student Complex", "Study Areas", "Recreation"],
-        "description": "Modern student residence complex with all amenities.",
         "link": "https://graduin.com/blog/2020/12/05/the-hunstanton-residence/",
-        "tag": "Premium"
+        "tag": "Premium",
+        "mapEmbed": "<iframe src=\"https://www.google.com/maps?q=The+Hunstanton+Residence+Johannesburg&output=embed\" width=\"100%\" height=\"300\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>"
     }
 ]

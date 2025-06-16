@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { X, Send, Bot, User } from 'lucide-react';
 
@@ -14,18 +13,56 @@ interface AIAssistantProps {
 }
 
 const AIAssistant = ({ onClose }: AIAssistantProps) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      text: "Hi! I'm your Graduin AI assistant. I'm here to help you with university applications, course selection, and accommodation. How can I assist you today?",
-      isUser: false,
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Load chat history from localStorage on component mount
+  useEffect(() => {
+    const savedMessages = localStorage.getItem('graduin-chat-history');
+    if (savedMessages) {
+      try {
+        const parsedMessages = JSON.parse(savedMessages).map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+        setMessages(parsedMessages);
+      } catch (error) {
+        console.error('Error loading chat history:', error);
+        // Initialize with welcome message if no valid history
+        initializeChat();
+      }
+    } else {
+      initializeChat();
+    }
+
+    // Clear chat history when user leaves the website
+    const handleBeforeUnload = () => {
+      localStorage.removeItem('graduin-chat-history');
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
+
+  // Save messages to localStorage whenever messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      localStorage.setItem('graduin-chat-history', JSON.stringify(messages));
+    }
+  }, [messages]);
+
+  const initializeChat = () => {
+    const welcomeMessage: Message = {
+      id: 1,
+      text: "Hi! I'm your Graduin AI assistant. I'm here to help you with university applications, course selection, accommodation, and all things related to Graduin's services. How can I assist you today?",
+      isUser: false,
+      timestamp: new Date()
+    };
+    setMessages([welcomeMessage]);
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -52,6 +89,73 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
     return null;
   };
 
+  const isGreeting = (text: string) => {
+    const greetings = ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening', 'greetings'];
+    return greetings.some(greeting => text.toLowerCase().includes(greeting));
+  };
+
+  const isContactRequest = (text: string) => {
+    const contactKeywords = ['contact support', 'speak to someone', 'human help', 'customer service', 'support team', 'help me contact'];
+    return contactKeywords.some(keyword => text.toLowerCase().includes(keyword));
+  };
+
+  const generateResponse = (userInput: string): string => {
+    const input = userInput.toLowerCase();
+
+    // Handle greetings
+    if (isGreeting(input)) {
+      return "Hello! Welcome to Graduin. I'm here to help you with anything related to our university application platform, course finder, student accommodation, and more. What would you like assistance with today?";
+    }
+
+    // Handle contact requests
+    if (isContactRequest(input)) {
+      return "I'd be happy to connect you with our support team for further assistance. Please use the contact button below to reach out to our support team directly.";
+    }
+
+    // Handle university/institution queries
+    if (input.includes('university') || input.includes('institution') || input.includes('college')) {
+      return "Graduin partners with over 200+ South African institutions including traditional universities, universities of technology, and private institutions. You can browse all available institutions on our Institutions page, where you can apply to multiple universities with a single application. Would you like help finding specific institutions or courses?";
+    }
+
+    // Handle course queries
+    if (input.includes('course') || input.includes('program') || input.includes('study') || input.includes('degree')) {
+      return "Our Course Finder helps you discover the perfect program for your interests and career goals. We offer courses across various fields including Engineering, Business, Health Sciences, Information Technology, Arts, and more. You can also take our Career Assessment to get personalized course recommendations. Would you like me to guide you to the Course Finder?";
+    }
+
+    // Handle accommodation queries
+    if (input.includes('accommodation') || input.includes('housing') || input.includes('residence') || input.includes('room')) {
+      return "Graduin offers a comprehensive accommodation marketplace with properties across South Africa. We have student residences, shared accommodation, and private rentals near major universities. You can search by location, price range, and amenities. Our accommodation page has detailed listings with photos, prices, and contact information. Need help finding accommodation in a specific area?";
+    }
+
+    // Handle application queries
+    if (input.includes('apply') || input.includes('application') || input.includes('admission')) {
+      return "With Graduin, you can apply to multiple universities and institutions with just one application! Our platform streamlines the entire process - simply fill out your information once, select your preferred institutions, and submit. You can track your applications and receive updates directly through our platform. Would you like help starting an application?";
+    }
+
+    // Handle career assessment queries
+    if (input.includes('career') || input.includes('assessment') || input.includes('test') || input.includes('guidance')) {
+      return "Our Career Assessment Test helps you discover your ideal career path and study recommendations based on your interests, strengths, and goals. The assessment analyzes your preferences and provides personalized suggestions for courses and institutions. You can access this free tool from our Course Finder page. Would you like to take the assessment?";
+    }
+
+    // Handle pricing/cost queries
+    if (input.includes('price') || input.includes('cost') || input.includes('fee') || input.includes('money')) {
+      return "Application fees vary by institution, ranging from free applications to around R440. Many institutions offer affordable options, and we provide detailed pricing information for each institution. For accommodation, prices typically range from R2,500 to R12,000+ per month depending on location and amenities. You can filter by price range on both our Institutions and Accommodation pages.";
+    }
+
+    // Handle location queries
+    if (input.includes('johannesburg') || input.includes('cape town') || input.includes('durban') || input.includes('pretoria') || input.includes('location')) {
+      return "Graduin covers institutions and accommodation across all major South African cities including Johannesburg, Cape Town, Durban, Pretoria, and more. You can search by specific locations on our platform. Many of our accommodation listings are strategically located near major universities for easy access to campus.";
+    }
+
+    // Handle general help
+    if (input.includes('help') || input.includes('how') || input.includes('what')) {
+      return "I can help you with:\n• Finding and applying to universities\n• Discovering courses and career paths\n• Searching for student accommodation\n• Taking career assessments\n• Understanding application processes\n• General information about Graduin's services\n\nWhat specific area would you like help with?";
+    }
+
+    // Default response for out-of-scope queries
+    return "I'm afraid that's outside my area of expertise. I specialize in helping with Graduin's services including university applications, course selection, student accommodation, and career guidance. If you need further assistance beyond what I can provide, please contact our support team using the button below.";
+  };
+
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
 
@@ -72,80 +176,28 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
       setUserName(detectedName);
     }
 
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer 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'
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: `You are a helpful AI assistant for Graduin (graduin.app), a South African education platform that helps high school graduates apply to multiple universities and institutions. Your role is to assist users with:
-              
-              1. University applications and admissions
-              2. Course selection and recommendations
-              3. Student accommodation search
-              4. Institution information
-              5. Application deadlines and requirements
-              
-              If users ask about topics unrelated to education, universities, or Graduin services, politely redirect them back to relevant topics by saying something like "Oh, it seems we're off topic. Let's get back on track - what would you like assistance with regarding Graduin services?"
-              
-              Always be helpful, friendly, and professional. If you know the user's name, use it in your responses. Keep responses concise but informative.
-              
-              Key Graduin services to mention:
-              - Multi-institution applications
-              - Course finder
-              - Student accommodation marketplace
-              - Institution database with 200+ South African institutions
-              - Application tracking
-              
-              Website: graduin.app`
-            },
-            {
-              role: 'user',
-              content: inputMessage
-            }
-          ],
-          max_tokens: 300,
-          temperature: 0.7
-        })
-      });
+    // Generate response
+    let responseText = generateResponse(inputMessage);
 
-      const data = await response.json();
-      let aiResponse = data.choices?.[0]?.message?.content || "I'm sorry, I couldn't process that request. Please try again.";
-
-      // Add user's name to response if we have it
-      if (userName || detectedName) {
-        const name = detectedName || userName;
-        if (!aiResponse.includes(name)) {
-          aiResponse = aiResponse.replace(/^/, `${name}, `);
-        }
+    // Add user's name to response if we have it
+    if (userName || detectedName) {
+      const name = detectedName || userName;
+      if (!responseText.includes(name)) {
+        responseText = `${name}, ${responseText}`;
       }
-
-      const aiMessage: Message = {
-        id: Date.now() + 1,
-        text: aiResponse,
-        isUser: false,
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
-      console.error('Error calling OpenAI API:', error);
-      const errorMessage: Message = {
-        id: Date.now() + 1,
-        text: "I'm experiencing some technical difficulties. Please try again in a moment or contact our support team for assistance.",
-        isUser: false,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
     }
+
+    const aiMessage: Message = {
+      id: Date.now() + 1,
+      text: responseText,
+      isUser: false,
+      timestamp: new Date()
+    };
+
+    setTimeout(() => {
+      setMessages(prev => [...prev, aiMessage]);
+      setIsLoading(false);
+    }, 1000);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -153,6 +205,12 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
       e.preventDefault();
       sendMessage();
     }
+  };
+
+  const handleContactSupport = () => {
+    // Navigate to contact page
+    window.dispatchEvent(new CustomEvent('changePage', { detail: 'contact-us' }));
+    onClose();
   };
 
   return (
@@ -190,11 +248,19 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
                   {!message.isUser && (
                     <Bot size={16} className="mt-1 text-purple-600" />
                   )}
-                  <p className="text-sm">{message.text}</p>
+                  <div className="text-sm whitespace-pre-line">{message.text}</div>
                   {message.isUser && (
                     <User size={16} className="mt-1 text-white/80" />
                   )}
                 </div>
+                {!message.isUser && (isContactRequest(message.text) || message.text.includes('contact our support team')) && (
+                  <button
+                    onClick={handleContactSupport}
+                    className="mt-2 bg-purple-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-purple-600 transition-colors"
+                  >
+                    Contact Support
+                  </button>
+                )}
               </div>
             </div>
           ))}

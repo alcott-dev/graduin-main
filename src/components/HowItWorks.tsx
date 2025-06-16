@@ -39,14 +39,21 @@ const HowItWorks = () => {
     {
       title: 'What is Graduin?',
       url: 'https://www.youtube.com/watch?v=x12lkxQQo4Q&t=1s',
-      description: 'Learn about our platform and how it simplifies university applications'
+      description: 'Learn about our platform and how it simplifies university applications',
+      thumbnail: 'https://i.postimg.cc/QMNDNHKz/Screenshot-9.png'
     },
     {
       title: 'Graduin Featured on eNCA',
       url: 'https://www.youtube.com/watch?v=z5WaMVaf0QU&t=2s',
-      description: 'Watch our feature on eNCA highlighting our impact on South African education'
+      description: 'Watch our feature on eNCA highlighting our impact on South African education',
+      thumbnail: 'https://i.postimg.cc/d0WYhw8V/Screenshot-10.png'
     }
   ];
+
+  const handleStartApplication = () => {
+    // Navigate to institutions page
+    window.dispatchEvent(new CustomEvent('changePage', { detail: 'institutions' }));
+  };
 
   return (
     <div className="flex-1 md:ml-24 min-h-screen pt-20 md:pt-12 px-6">
@@ -73,9 +80,13 @@ const HowItWorks = () => {
             {videos.map((video, index) => (
               <div key={index} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden card-hover cursor-pointer"
                    onClick={() => setSelectedVideo(video)}>
-                <div className="aspect-video bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center relative">
-                  <PlayCircle className="text-purple-600" size={64} />
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                <div className="aspect-video bg-gradient-to-br from-purple-100 to-blue-100 flex items-center justify-center relative"
+                     style={{
+                       backgroundImage: `url(${video.thumbnail})`,
+                       backgroundSize: 'cover',
+                       backgroundPosition: 'center'
+                     }}>
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                     <div className="text-white text-center">
                       <PlayCircle size={48} className="mx-auto mb-2" />
                       <p className="text-sm font-medium">Click to Play</p>
@@ -172,7 +183,10 @@ const HowItWorks = () => {
         <div className="text-center bg-gradient-to-r from-purple-500 to-blue-500 rounded-3xl p-12 text-white">
           <h2 className="text-3xl font-bold mb-4">Ready to Simplify Your Applications?</h2>
           <p className="text-lg mb-8 opacity-90">Join thousands of students who have streamlined their university application process.</p>
-          <button className="bg-white text-purple-600 px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200">
+          <button 
+            onClick={handleStartApplication}
+            className="bg-white text-purple-600 px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200"
+          >
             Start Your Application
           </button>
         </div>

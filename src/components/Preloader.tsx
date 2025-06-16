@@ -28,7 +28,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
         <img
           src="https://i.postimg.cc/rsb7Xkdn/Graduin-Loader.gif"
           alt="Loading..."
-          className="w-32 h-auto mx-auto"
+          className="w-24 h-auto mx-auto"
         />
       </div>
     </div>

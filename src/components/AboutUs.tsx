@@ -1,4 +1,3 @@
-
 import { Target, Award, Heart } from 'lucide-react';
 
 const AboutUs = () => {
@@ -19,6 +18,11 @@ const AboutUs = () => {
       description: 'Helping thousands of students find their perfect university match and secure their place in higher education.',
     },
   ];
+
+  const handleGetStarted = () => {
+    // Navigate to home page
+    window.dispatchEvent(new CustomEvent('changePage', { detail: 'home' }));
+  };
 
   return (
     <div className="flex-1 md:ml-16 min-h-screen pt-20 md:pt-12 px-6">
@@ -56,7 +60,10 @@ const AboutUs = () => {
         <div className="text-center bg-gradient-to-r from-purple-500 to-blue-500 rounded-3xl p-12 text-white">
           <h2 className="text-3xl font-bold mb-4">Ready to Start Your Journey?</h2>
           <p className="text-lg mb-8 opacity-90">Join thousands of students who have simplified their university application process with Graduin.</p>
-          <button className="bg-white text-purple-600 px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200">
+          <button 
+            onClick={handleGetStarted}
+            className="bg-white text-purple-600 px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200"
+          >
             Get Started Today
           </button>
         </div>
