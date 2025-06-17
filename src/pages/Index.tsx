@@ -9,6 +9,7 @@ import Accommodation from '../components/Accommodation';
 import ContactUs from '../components/ContactUs';
 import Footer from '../components/Footer';
 import Preloader from '../components/Preloader';
+import GDPRNotice from '../components/GDPRNotice';
 import { ApplicationCartProvider } from '../contexts/ApplicationCartContext';
 
 const Index = () => {
@@ -82,6 +83,7 @@ const Index = () => {
           </div>
           <Footer onPageChange={setCurrentPage} />
         </div>
+        <GDPRNotice />
       </div>
     </ApplicationCartProvider>
   );

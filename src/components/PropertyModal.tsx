@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, MapPin, Wifi, Car, Shield, Bed, ExternalLink } from 'lucide-react';
+import { X, MapPin, Wifi, Car, Shield, Bed, ExternalLink, Copy, Check } from 'lucide-react';
 
 interface PropertyModalProps {
   property: any;
@@ -10,13 +10,18 @@ const PropertyModal = ({ property, onClose }: PropertyModalProps) => {
   const [propertyData, setPropertyData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    // Set property data directly from props
+    // Filter out the specific images from gallery
+    const filteredGallery = property.gallery?.filter((img: string) => 
+      !img.includes('education.png') && !img.includes('home.png')
+    ) || [property.image];
+
     setPropertyData({
       ...property,
       description: property.description || `Beautiful student accommodation located in ${property.address || property.location}. This property offers excellent amenities and is perfect for students looking for comfortable and affordable housing.`,
-      images: property.gallery || [property.image],
+      images: filteredGallery,
       amenities: property.features || ['Wi-Fi', 'Security', 'Furnished']
     });
     setLoading(false);
@@ -38,6 +43,39 @@ const PropertyModal = ({ property, onClose }: PropertyModalProps) => {
     if (propertyData.link) {
       window.open(propertyData.link, '_blank');
     }
+  };
+
+  const handleSaveProperty = () => {
+    const bookmarkUrl = window.location.href;
+    const bookmarkTitle = propertyData.title;
+    
+    // Try to add bookmark (works in some browsers)
+    if (window.sidebar && window.sidebar.addPanel) {
+      window.sidebar.addPanel(bookmarkTitle, bookmarkUrl, '');
+    } else if (window.external && ('AddFavorite' in window.external)) {
+      window.external.AddFavorite(bookmarkUrl, bookmarkTitle);
+    } else {
+      // Fallback: copy URL to clipboard
+      navigator.clipboard.writeText(bookmarkUrl).then(() => {
+        alert('Property URL copied to clipboard! You can bookmark this page manually.');
+      });
+    }
+  };
+
+  const handleContactAgent = async () => {
+    const phoneNumber = '+27828998535';
+    
+    // Copy to clipboard
+    try {
+      await navigator.clipboard.writeText(phoneNumber);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+    
+    // Open tel link
+    window.location.href = `tel:${phoneNumber}`;
   };
 
   if (loading) {
@@ -184,10 +222,17 @@ const PropertyModal = ({ property, onClose }: PropertyModalProps) => {
 
           {/* Action Buttons */}
           <div className="flex gap-4">
-            <button className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200">
-              +27 82 899 8535
+            <button 
+              onClick={handleContactAgent}
+              className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+            >
+              {copied ? <Check size={20} /> : <Copy size={20} />}
+              Contact Agent: +27 82 899 8535
             </button>
-            <button className="px-6 py-3 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors">
+            <button 
+              onClick={handleSaveProperty}
+              className="px-6 py-3 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors"
+            >
               Save Property
             </button>
           </div>

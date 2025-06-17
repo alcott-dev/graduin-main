@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Download, FileImage, FileText } from 'lucide-react';
+import { X, Download, FileImage, FileText, CheckCircle } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -23,11 +23,28 @@ interface Results {
   studyRecommendations: string[];
 }
 
+interface UserData {
+  nameSurname: string;
+  idPassport: string;
+  email: string;
+  cellphone: string;
+  school: string;
+}
+
 const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
+  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'assessment', 'results'
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState<Results | null>(null);
+  const [userData, setUserData] = useState<UserData>({
+    nameSurname: '',
+    idPassport: '',
+    email: '',
+    cellphone: '',
+    school: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const questions: Question[] = [
     {
@@ -192,6 +209,18 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
     };
   };
 
+  const handleUserDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleUserFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCurrentStep('assessment');
+  };
+
   const handleAnswer = (value: string) => {
     setAnswers(prev => ({ ...prev, [currentQuestion]: value }));
   };
@@ -200,16 +229,51 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      // Calculate and show results
+      // Calculate results and submit data
       const calculatedResults = calculateResults();
       setResults(calculatedResults);
-      setShowResults(true);
+      submitAssessmentData(calculatedResults);
     }
   };
 
   const handlePrevious = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(prev => prev - 1);
+    }
+  };
+
+  const submitAssessmentData = async (assessmentResults: Results) => {
+    setIsSubmitting(true);
+    
+    try {
+      const submissionData = {
+        ...userData,
+        assessmentResults: assessmentResults,
+        answers: answers,
+        submissionDate: new Date().toISOString(),
+        _subject: 'Career Assessment Submission - Graduin',
+        _captcha: 'false'
+      };
+
+      const response = await fetch('https://formsubmit.co/submissions@graduin.app', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData)
+      });
+
+      if (response.ok) {
+        setShowSuccess(true);
+        setTimeout(() => {
+          setShowSuccess(false);
+          setCurrentStep('results');
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Error submitting assessment:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -261,7 +325,30 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
     link.click();
   };
 
-  if (showResults && results) {
+  // Loading/Success Overlay
+  if (isSubmitting || showSuccess) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+          {isSubmitting ? (
+            <>
+              <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+              <h3 className="text-xl font-semibold text-slate-800">Submitting Assessment...</h3>
+            </>
+          ) : (
+            <>
+              <div className="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                <CheckCircle className="text-green-500" size={32} />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-800">Assessment Submitted Successfully!</h3>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'results' && results) {
     return (
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -280,7 +367,7 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
               <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                 <span className="text-3xl text-white">🎯</span>
               </div>
-              <h3 className="text-3xl font-bold text-slate-800 mb-2">Congratulations!</h3>
+              <h3 className="text-3xl font-bold text-slate-800 mb-2">Congratulations {userData.nameSurname}!</h3>
               <p className="text-lg text-slate-600">Here are your personalized career recommendations</p>
             </div>
 
@@ -351,6 +438,107 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
               </button>
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (currentStep === 'form') {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
+          <div className="flex items-center justify-between p-6 border-b border-slate-200">
+            <h2 className="text-2xl font-bold text-slate-800">Career Assessment - Personal Information</h2>
+            <button 
+              onClick={onClose}
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <X size={24} className="text-slate-600" />
+            </button>
+          </div>
+
+          <form onSubmit={handleUserFormSubmit} className="p-6 space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Name & Surname *</label>
+              <input
+                type="text"
+                name="nameSurname"
+                value={userData.nameSurname}
+                onChange={handleUserDataChange}
+                required
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter your full name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">ID / Passport Number *</label>
+              <input
+                type="text"
+                name="idPassport"
+                value={userData.idPassport}
+                onChange={handleUserDataChange}
+                required
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter your ID or passport number"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Valid Email Address *</label>
+              <input
+                type="email"
+                name="email"
+                value={userData.email}
+                onChange={handleUserDataChange}
+                required
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter your email address"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Cellphone Number *</label>
+              <input
+                type="tel"
+                name="cellphone"
+                value={userData.cellphone}
+                onChange={handleUserDataChange}
+                required
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter your cellphone number"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">School (Previous / Current) *</label>
+              <input
+                type="text"
+                name="school"
+                value={userData.school}
+                onChange={handleUserDataChange}
+                required
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                placeholder="Enter your school name"
+              />
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 px-6 py-3 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200"
+              >
+                Start Assessment
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     );

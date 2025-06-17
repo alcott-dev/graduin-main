@@ -6,19 +6,19 @@ interface FooterProps {
 
 const Footer = ({ onPageChange }: FooterProps) => {
   const mainLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'About Us', path: '/about' },
-    { name: 'How It Works', path: '/how-it-works' },
-    { name: 'Institutions', path: '/institutions' },
-    { name: 'Contact Us', path: '/contact' },
+    { name: 'Home', path: 'home' },
+    { name: 'About Us', path: 'about' },
+    { name: 'How It Works', path: 'how-it-works' },
+    { name: 'Institutions', path: 'institutions' },
+    { name: 'Contact Us', path: 'contact' },
   ];
   
   const quickLinks = [
-    { name: 'Student Accommodation', path: '/accommodation' },
-    { name: 'Course Finder', path: '/course-finder' },
-    { name: 'Private Institutions', path: '/institutions?type=private' },
-    { name: 'Traditional Universities', path: '/institutions?type=traditional' },
-    { name: 'Universities Of Technology', path: '/institutions?type=technology' },
+    { name: 'Student Accommodation', path: 'accommodation' },
+    { name: 'Course Finder', path: 'course-finder' },
+    { name: 'Private Institutions', path: 'institutions', filter: 'private' },
+    { name: 'Traditional Universities', path: 'institutions', filter: 'traditional' },
+    { name: 'Universities Of Technology', path: 'institutions', filter: 'technology' },
   ];
   
   const socialLinks = [
@@ -28,10 +28,9 @@ const Footer = ({ onPageChange }: FooterProps) => {
     { name: 'BlueSky (Twitter)', icon: Twitter, url: 'https://twitter.com/graduin' },
   ];
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, page: string) => {
     e.preventDefault();
-    const page = e.currentTarget.getAttribute('data-page');
-    if (page && onPageChange) {
+    if (onPageChange) {
       onPageChange(page);
     }
   };
@@ -40,6 +39,10 @@ const Footer = ({ onPageChange }: FooterProps) => {
     if (onPageChange) {
       onPageChange('home');
     }
+  };
+
+  const handleDeveloperClick = () => {
+    window.open('https://alcott.digital/', '_blank');
   };
 
   return (
@@ -79,8 +82,7 @@ const Footer = ({ onPageChange }: FooterProps) => {
                 <li key={link.name}>
                   <a 
                     href="#" 
-                    data-page={link.name.toLowerCase().replace(' ', '-')} 
-                    onClick={handleClick}
+                    onClick={(e) => handleClick(e, link.path)}
                     className="text-slate-600 hover:text-purple-600 transition-colors"
                   >
                     {link.name}
@@ -97,6 +99,7 @@ const Footer = ({ onPageChange }: FooterProps) => {
                 <li key={link.name}>
                   <a 
                     href="#" 
+                    onClick={(e) => handleClick(e, link.path)}
                     className="text-slate-600 hover:text-purple-600 transition-colors"
                   >
                     {link.name}
@@ -124,10 +127,40 @@ const Footer = ({ onPageChange }: FooterProps) => {
 
         <div className="border-t border-slate-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-slate-600 text-sm">© 2025 Graduin. All rights reserved.</p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-slate-600 hover:text-purple-600 text-sm">Privacy Policy</a>
-            <a href="#" className="text-slate-600 hover:text-purple-600 text-sm">Terms of Service</a>
-            <a href="#" className="text-slate-600 hover:text-purple-600 text-sm">Cookie Policy</a>
+          <div className="flex items-center space-x-6 mt-4 md:mt-0">
+            <a 
+              href="https://policies.google.com/privacy?hl=en-US" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-slate-600 hover:text-purple-600 text-sm"
+            >
+              Privacy Policy
+            </a>
+            <a 
+              href="https://policies.google.com/terms?hl=en-US" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-slate-600 hover:text-purple-600 text-sm"
+            >
+              Terms of Service
+            </a>
+            <a 
+              href="https://policies.google.com/technologies/cookies?hl=en-US" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-slate-600 hover:text-purple-600 text-sm"
+            >
+              Cookie Policy
+            </a>
+          </div>
+          <div className="flex items-center space-x-2 mt-4 md:mt-0">
+            <span className="text-slate-600 text-sm">Design & Developed by</span>
+            <img 
+              src="https://i.postimg.cc/SQCV1pJD/Alcott-Web-Space-r0j9urza7a8inxjrrk37iebt7sibve45xz5se48zp4.png" 
+              alt="Alcott Digital" 
+              className="w-[60px] h-auto object-contain cursor-pointer hover:scale-105 transition-transform"
+              onClick={handleDeveloperClick}
+            />
           </div>
         </div>
       </div>
