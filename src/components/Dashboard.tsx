@@ -1,5 +1,5 @@
 import { Search, ArrowRight, Building, BookOpen, Bed, FileText, Bot, Users, GraduationCap, Clock, ClipboardCheck, Star } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AIAssistant from './AIAssistant';
 import CareerAssessmentModal from './CareerAssessmentModal';
 import ApplicationTrackingModal from './ApplicationTrackingModal';
@@ -55,35 +55,40 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
       title: 'Take Assessment Test', 
       icon: ClipboardCheck,
       description: 'Discover your career path',
-      isNew: true 
+      isNew: true,
+      buttonColor: 'bg-gradient-to-r from-emerald-400 to-teal-400'
     },
     { 
       id: 'course-finder', 
       title: 'Course Finder', 
       icon: BookOpen,
       description: 'Find your perfect course',
-      isNew: false 
+      isNew: false,
+      buttonColor: 'bg-gradient-to-r from-blue-400 to-indigo-400'
     },
     { 
       id: 'institutions', 
       title: 'Universities', 
       icon: Building,
       description: 'Browse universities',
-      isNew: false 
+      isNew: false,
+      buttonColor: 'bg-gradient-to-r from-purple-400 to-pink-400'
     },
     { 
       id: 'accommodation', 
       title: 'Accommodation', 
       icon: Bed,
       description: 'Find student housing',
-      isNew: false 
+      isNew: false,
+      buttonColor: 'bg-gradient-to-r from-orange-400 to-red-400'
     },
     { 
       id: 'ai-assistant', 
       title: 'AI Assistant', 
       icon: Bot,
       description: 'Get instant help',
-      isNew: true 
+      isNew: true,
+      buttonColor: 'bg-gradient-to-r from-cyan-400 to-blue-400'
     },
   ];
 
@@ -195,7 +200,7 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
           </button>
         </div>
 
-        {/* Search Bar with Suggestions */}
+        {/* Search Bar with Glow Effect */}
         <div className="max-w-2xl mx-auto mb-12 relative">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
@@ -209,7 +214,10 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
               }}
               onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               onFocus={() => searchTerm.length > 0 && setShowSearchSuggestions(true)}
-              className="w-full pl-12 pr-16 py-4 rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full pl-12 pr-16 py-4 rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-lg focus:shadow-purple-500/25 transition-all duration-300"
+              style={{
+                boxShadow: '0 0 20px rgba(139, 92, 246, 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+              }}
             />
             <button 
               onClick={handleSearch}
@@ -242,13 +250,13 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-xl font-semibold text-slate-600 mb-6">As Featured On</h2>
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 overflow-hidden">
-            <div className="flex items-center justify-center gap-8 transition-transform duration-1000 ease-in-out">
+            <div className="flex items-center justify-center gap-8 md:gap-12 transition-transform duration-1000 ease-in-out">
               {getCurrentLogos().map((logo, index) => (
                 <img 
                   key={`${currentLogoIndex}-${index}`}
                   src={logo} 
                   alt={`Featured Logo ${index + 1}`} 
-                  className="h-12 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity"
+                  className="h-12 md:h-16 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity"
                 />
               ))}
             </div>
@@ -270,7 +278,10 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
                   <card.icon className="text-purple-600" size={16} />
                 </div>
                 <h3 className="font-medium text-slate-700 text-center text-xs md:text-sm mb-1">{card.title}</h3>
-                <p className="text-xs text-slate-500 text-center">{card.description}</p>
+                <p className="text-xs text-slate-500 text-center mb-2">{card.description}</p>
+                <div className={`${card.buttonColor} text-white text-xs px-2 py-1 rounded-full text-center font-medium`}>
+                  {card.title}
+                </div>
                 {card.isNew && (
                   <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                     New
