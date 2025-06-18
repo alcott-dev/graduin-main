@@ -83,7 +83,9 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
         institutions: cartItems.length > 0 ? cartItems : [selectedInstitution],
         totalApplicationFee: cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0,
         submissionDate: new Date().toISOString(),
-        applicationId: `APP-${Date.now()}`
+        applicationId: `APP-${Date.now()}`,
+        _subject: 'University Application Submission - Graduin',
+        _captcha: 'false'
       };
 
       const response = await fetch('https://formsubmit.co/submissions@graduin.app', {
@@ -95,11 +97,27 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
       });
 
       if (response.ok) {
-        toast({
-          title: "Application Submitted Successfully!",
-          description: "Your application has been submitted. Please proceed to payment.",
-        });
-        setShowPaymentForm(true);
+        const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
+        
+        if (totalFee === 0) {
+          // Free application - show success popup
+          toast({
+            title: "Application Submitted Successfully!",
+            description: "We have received your application.",
+          });
+          clearCart();
+          setFormData({
+            firstName: '', lastName: '', email: '', phone: '', idNumber: '',
+            dateOfBirth: '', address: '', city: '', province: '', postalCode: '',
+            guardianName: '', guardianPhone: '', guardianEmail: '', previousSchool: '',
+            matricYear: '', matricResults: '', preferredCourse1: '', preferredCourse2: '',
+            preferredCourse3: '', motivation: '', accommodation: 'no', financialAid: 'no'
+          });
+          onClose();
+        } else {
+          // Paid application - proceed to payment
+          setShowPaymentForm(true);
+        }
       }
     } catch (error) {
       toast({
@@ -118,37 +136,33 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
       ? cartItems.map(item => item.name).join(', ')
       : selectedInstitution?.name || '';
 
-    if (totalFee > 0) {
-      // Create and submit the payment form
-      const form = document.createElement('form');
-      form.action = 'https://www.payfast.co.za/eng/process';
-      form.method = 'post';
-      form.target = '_blank';
+    // Create and submit the payment form
+    const form = document.createElement('form');
+    form.action = 'https://www.payfast.co.za/eng/process';
+    form.method = 'post';
+    form.target = '_blank';
 
-      const fields = {
-        merchant_id: '13208346',
-        merchant_key: 'xux5xm3dc4fec',
-        return_url: 'https://graduin.app/success',
-        cancel_url: 'https://graduin.app/cancelled',
-        notify_url: 'https://graduin.app/api/payfast-notify',
-        amount: totalFee.toFixed(2),
-        item_name: `Application to: ${institutionNames}`
-      };
+    const fields = {
+      merchant_id: '13208346',
+      merchant_key: 'xux5xm3dc4fec',
+      return_url: 'https://graduin.app/success',
+      cancel_url: 'https://graduin.app/cancelled',
+      notify_url: 'https://graduin.app/api/payfast-notify',
+      amount: totalFee.toFixed(2),
+      item_name: `Application to: ${institutionNames}`
+    };
 
-      Object.entries(fields).forEach(([key, value]) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = value;
-        form.appendChild(input);
-      });
+    Object.entries(fields).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = value;
+      form.appendChild(input);
+    });
 
-      document.body.appendChild(form);
-      form.submit();
-      document.body.removeChild(form);
-    } else {
-      alert("This application is free. Your form has been submitted.");
-    }
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
 
     clearCart();
     setFormData({

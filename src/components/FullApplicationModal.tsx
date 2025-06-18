@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { X, Upload, CheckCircle, Mail } from 'lucide-react';
+import { X, CheckCircle, Mail } from 'lucide-react';
+import { FileUploaderRegular } from '@uploadcare/react-uploader';
+import '@uploadcare/react-uploader/core.css';
 
 interface FullApplicationModalProps {
   onClose: () => void;
@@ -55,7 +57,7 @@ const FullApplicationModal = ({ onClose }: FullApplicationModalProps) => {
     selectedInstitutions: [] as string[],
     
     // Documents
-    documents: [] as File[]
+    documentUrls: [] as string[]
   });
 
   const southAfricanInstitutions = [
@@ -164,17 +166,36 @@ const FullApplicationModal = ({ onClose }: FullApplicationModalProps) => {
     }));
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setFormData(prev => ({
-      ...prev,
-      documents: [...prev.documents, ...files]
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setShowSuccess(true);
+    
+    try {
+      const submissionData = {
+        ...formData,
+        uploadedDocuments: formData.documentUrls.join(', '),
+        selectedInstitutionsList: formData.selectedInstitutions.join(', '),
+        submissionDate: new Date().toISOString(),
+        _subject: 'Full University Application - Graduin',
+        _captcha: 'false'
+      };
+
+      const response = await fetch('https://formsubmit.co/submissions@graduin.app', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData)
+      });
+
+      if (response.ok) {
+        setShowSuccess(true);
+      } else {
+        alert('There was an error submitting your application. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      alert('There was an error submitting your application. Please try again.');
+    }
   };
 
   const handleEmailDocuments = () => {
@@ -190,6 +211,8 @@ Email: ${formData.email}
 Phone: ${formData.phone}
 
 Selected Institutions: ${formData.selectedInstitutions.join(', ')}
+
+Uploaded Documents: ${formData.documentUrls.join(', ')}
 
 Best regards,
 ${formData.firstName} ${formData.lastName}`);
@@ -666,41 +689,32 @@ ${formData.firstName} ${formData.lastName}`);
       case 6:
         return (
           <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-slate-800 mb-6">Document Upload (Optional)</h3>
+            <h3 className="text-2xl font-bold text-slate-800 mb-6">Document Upload</h3>
             <p className="text-slate-600 mb-4">
-              Upload your certified digital copies of documents here, or email them later using the provided option.
+              Upload your certified digital copies of documents here.
             </p>
             
-            <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center">
-              <Upload className="mx-auto mb-4 text-slate-400" size={48} />
-              <h4 className="text-lg font-semibold text-slate-700 mb-2">Upload Documents</h4>
-              <p className="text-slate-500 mb-4">
-                Required documents: ID/Passport copy, Matric Certificate, Academic Transcripts
-              </p>
-              <input
-                type="file"
-                multiple
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={handleFileUpload}
-                className="hidden"
-                id="document-upload"
+            <div className="border-2 border-dashed border-slate-300 rounded-xl p-8">
+              <FileUploaderRegular
+                sourceList="local, camera, facebook, gdrive"
+                filesViewMode="grid"
+                gridShowFileNames={true}
+                classNameUploader="uc-purple"
+                pubkey="82dd7ec1dfce34a06bc3"
+                onCommonUploadSuccess={(e) => {
+                  const urls = e.detail.successEntries.map(entry => entry.cdnUrl);
+                  setFormData(prev => ({ ...prev, documentUrls: [...prev.documentUrls, ...urls] }));
+                }}
               />
-              <label
-                htmlFor="document-upload"
-                className="inline-flex items-center gap-2 bg-purple-500 text-white px-6 py-3 rounded-xl font-medium hover:bg-purple-600 transition-colors cursor-pointer"
-              >
-                <Upload size={20} />
-                Choose Files
-              </label>
             </div>
 
-            {formData.documents.length > 0 && (
+            {formData.documentUrls.length > 0 && (
               <div className="bg-green-50 rounded-xl p-4">
                 <h4 className="font-semibold text-green-800 mb-2">Uploaded Documents:</h4>
                 <ul className="space-y-1">
-                  {formData.documents.map((file, index) => (
+                  {formData.documentUrls.map((url, index) => (
                     <li key={index} className="text-sm text-green-700">
-                      ✓ {file.name}
+                      ✓ Document {index + 1}: {url}
                     </li>
                   ))}
                 </ul>
@@ -708,11 +722,13 @@ ${formData.firstName} ${formData.lastName}`);
             )}
 
             <div className="bg-blue-50 rounded-xl p-4">
-              <h4 className="font-semibold text-blue-800 mb-2">Important Note:</h4>
-              <p className="text-sm text-blue-700">
-                All documents must be certified digital copies. If you prefer to email your documents, 
-                you can do so after submitting this application using the email option provided.
-              </p>
+              <h4 className="font-semibold text-blue-800 mb-2">Required Documents:</h4>
+              <ul className="text-sm text-blue-700 space-y-1">
+                <li>• ID/Passport copy</li>
+                <li>• Matric Certificate</li>
+                <li>• Academic Transcripts</li>
+                <li>• Proof of Address</li>
+              </ul>
             </div>
           </div>
         );

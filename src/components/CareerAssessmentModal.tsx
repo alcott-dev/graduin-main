@@ -216,9 +216,36 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
     }));
   };
 
-  const handleUserFormSubmit = (e: React.FormEvent) => {
+  const handleUserFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentStep('assessment');
+    setIsSubmitting(true);
+
+    try {
+      // Submit user data to formsubmit.co before starting assessment
+      const response = await fetch('https://formsubmit.co/submissions@graduin.app', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...userData,
+          _subject: 'Career Assessment Started - Graduin',
+          _captcha: 'false',
+          submissionDate: new Date().toISOString()
+        })
+      });
+
+      if (response.ok) {
+        setCurrentStep('assessment');
+      } else {
+        alert('There was an error submitting your information. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting user data:', error);
+      alert('There was an error submitting your information. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleAnswer = (value: string) => {
@@ -229,51 +256,16 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(prev => prev + 1);
     } else {
-      // Calculate results and submit data
+      // Calculate results and show them
       const calculatedResults = calculateResults();
       setResults(calculatedResults);
-      submitAssessmentData(calculatedResults);
+      setCurrentStep('results');
     }
   };
 
   const handlePrevious = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(prev => prev - 1);
-    }
-  };
-
-  const submitAssessmentData = async (assessmentResults: Results) => {
-    setIsSubmitting(true);
-    
-    try {
-      const submissionData = {
-        ...userData,
-        assessmentResults: assessmentResults,
-        answers: answers,
-        submissionDate: new Date().toISOString(),
-        _subject: 'Career Assessment Submission - Graduin',
-        _captcha: 'false'
-      };
-
-      const response = await fetch('https://formsubmit.co/submissions@graduin.app', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(submissionData)
-      });
-
-      if (response.ok) {
-        setShowSuccess(true);
-        setTimeout(() => {
-          setShowSuccess(false);
-          setCurrentStep('results');
-        }, 2000);
-      }
-    } catch (error) {
-      console.error('Error submitting assessment:', error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -326,23 +318,12 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
   };
 
   // Loading/Success Overlay
-  if (isSubmitting || showSuccess) {
+  if (isSubmitting) {
     return (
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
-          {isSubmitting ? (
-            <>
-              <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
-              <h3 className="text-xl font-semibold text-slate-800">Submitting Assessment...</h3>
-            </>
-          ) : (
-            <>
-              <div className="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <CheckCircle className="text-green-500" size={32} />
-              </div>
-              <h3 className="text-xl font-semibold text-slate-800">Assessment Submitted Successfully!</h3>
-            </>
-          )}
+          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <h3 className="text-xl font-semibold text-slate-800">Submitting Information...</h3>
         </div>
       </div>
     );
@@ -533,9 +514,10 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
               </button>
               <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200"
+                disabled={isSubmitting}
+                className="flex-1 bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50"
               >
-                Start Assessment
+                {isSubmitting ? 'Submitting...' : 'Start Assessment'}
               </button>
             </div>
           </form>

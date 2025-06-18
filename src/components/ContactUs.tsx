@@ -6,7 +6,7 @@ const ContactUs = () => {
     nameSurname: '',
     phoneNumber: '',
     emailAddress: '',
-    physicalAddress: '',
+    message: '',
     institutionName: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,7 +49,7 @@ const ContactUs = () => {
             nameSurname: '',
             phoneNumber: '',
             emailAddress: '',
-            physicalAddress: '',
+            message: '',
             institutionName: ''
           });
         }, 3000);
@@ -123,15 +123,15 @@ const ContactUs = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Physical Address *</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Your Message / Inquiry *</label>
                     <textarea
-                      name="physicalAddress"
-                      value={formData.physicalAddress}
+                      name="message"
+                      value={formData.message}
                       onChange={handleInputChange}
                       required
-                      rows={3}
+                      rows={4}
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                      placeholder="Enter your physical address"
+                      placeholder="Please describe your inquiry or message"
                     ></textarea>
                   </div>
 
@@ -244,15 +244,15 @@ const ContactUs = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Physical Address *</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Your Message / Inquiry *</label>
                 <textarea
-                  name="physicalAddress"
-                  value={formData.physicalAddress}
+                  name="message"
+                  value={formData.message}
                   onChange={handleInputChange}
                   required
-                  rows={3}
+                  rows={4}
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                  placeholder="Enter your physical address"
+                  placeholder="Please describe your inquiry or message"
                 ></textarea>
               </div>
 
