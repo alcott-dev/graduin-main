@@ -24,9 +24,9 @@ const Institutions = () => {
   }, []);
 
   const institutionTypes = [
-    { id: 'traditional', title: 'Traditional Universities', count: '26 institutions', color: 'bg-blue-500', icon: University },
-    { id: 'technology', title: 'Universities of Technology', count: '15 institutions', color: 'bg-green-500', icon: Building },
-    { id: 'private', title: 'Private Institutions', count: '150+ institutions', color: 'bg-purple-500', icon: School },
+    { id: 'traditional', title: 'Traditional Universities', count: '20 institutions', color: 'bg-blue-500', icon: University },
+    { id: 'technology', title: 'Universities of Technology', count: '6 institutions', color: 'bg-green-500', icon: Building },
+    { id: 'private', title: 'Private Institutions', count: '25 institutions', color: 'bg-purple-500', icon: School },
   ];
 
   const searchSuggestions = institutions.filter(institution =>
@@ -149,10 +149,6 @@ const Institutions = () => {
               <option value="technology">Universities of Technology</option>
               <option value="private">Private Institutions</option>
             </select>
-            <button className="flex items-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
-              <MapPin size={18} />
-              <span className="hidden md:inline">Location</span>
-            </button>
           </div>
         </div>
 

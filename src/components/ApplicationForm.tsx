@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { X, ShoppingCart, Trash2 } from 'lucide-react';
+import { X, ShoppingCart, Trash2, Upload } from 'lucide-react';
 import { useApplicationCart } from '../contexts/ApplicationCartContext';
 import { useToast } from '@/hooks/use-toast';
+import { FileUploaderRegular } from '@uploadcare/react-uploader';
+import '@uploadcare/react-uploader/core.css';
 
 interface ApplicationFormProps {
   isOpen: boolean;
@@ -25,6 +27,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [documentUrls, setDocumentUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -78,10 +81,15 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
     setIsSubmitting(true);
 
     try {
+      const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
+      const institutions = cartItems.length > 0 ? cartItems : [selectedInstitution];
+      
       const applicationData = {
         ...formData,
-        institutions: cartItems.length > 0 ? cartItems : [selectedInstitution],
-        totalApplicationFee: cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0,
+        institutions: institutions.map(inst => inst?.name).join(', '),
+        institutionTypes: institutions.map(inst => inst?.type).join(', '),
+        totalApplicationFee: totalFee,
+        uploadedDocuments: documentUrls.join(', '),
         submissionDate: new Date().toISOString(),
         applicationId: `APP-${Date.now()}`,
         _subject: 'University Application Submission - Graduin',
@@ -97,8 +105,6 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
       });
 
       if (response.ok) {
-        const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
-        
         if (totalFee === 0) {
           // Free application - show success popup
           toast({
@@ -106,20 +112,17 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
             description: "We have received your application.",
           });
           clearCart();
-          setFormData({
-            firstName: '', lastName: '', email: '', phone: '', idNumber: '',
-            dateOfBirth: '', address: '', city: '', province: '', postalCode: '',
-            guardianName: '', guardianPhone: '', guardianEmail: '', previousSchool: '',
-            matricYear: '', matricResults: '', preferredCourse1: '', preferredCourse2: '',
-            preferredCourse3: '', motivation: '', accommodation: 'no', financialAid: 'no'
-          });
+          resetForm();
           onClose();
         } else {
           // Paid application - proceed to payment
           setShowPaymentForm(true);
         }
+      } else {
+        throw new Error('Failed to submit application');
       }
     } catch (error) {
+      console.error('Error submitting application:', error);
       toast({
         title: "Submission Error",
         description: "There was an error submitting your application. Please try again.",
@@ -130,13 +133,24 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
     }
   };
 
+  const resetForm = () => {
+    setFormData({
+      firstName: '', lastName: '', email: '', phone: '', idNumber: '',
+      dateOfBirth: '', address: '', city: '', province: '', postalCode: '',
+      guardianName: '', guardianPhone: '', guardianEmail: '', previousSchool: '',
+      matricYear: '', matricResults: '', preferredCourse1: '', preferredCourse2: '',
+      preferredCourse3: '', motivation: '', accommodation: 'no', financialAid: 'no'
+    });
+    setDocumentUrls([]);
+  };
+
   const handlePayment = () => {
     const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
     const institutionNames = cartItems.length > 0 
       ? cartItems.map(item => item.name).join(', ')
       : selectedInstitution?.name || '';
 
-    // Create and submit the payment form
+    // Create PayFast payment form
     const form = document.createElement('form');
     form.action = 'https://www.payfast.co.za/eng/process';
     form.method = 'post';
@@ -149,7 +163,10 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
       cancel_url: 'https://graduin.app/cancelled',
       notify_url: 'https://graduin.app/api/payfast-notify',
       amount: totalFee.toFixed(2),
-      item_name: `Application to: ${institutionNames}`
+      item_name: `University Application Fee - ${institutionNames}`,
+      name_first: formData.firstName,
+      name_last: formData.lastName,
+      email_address: formData.email
     };
 
     Object.entries(fields).forEach(([key, value]) => {
@@ -165,19 +182,15 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
     document.body.removeChild(form);
 
     clearCart();
-    setFormData({
-      firstName: '', lastName: '', email: '', phone: '', idNumber: '',
-      dateOfBirth: '', address: '', city: '', province: '', postalCode: '',
-      guardianName: '', guardianPhone: '', guardianEmail: '', previousSchool: '',
-      matricYear: '', matricResults: '', preferredCourse1: '', preferredCourse2: '',
-      preferredCourse3: '', motivation: '', accommodation: 'no', financialAid: 'no'
-    });
+    resetForm();
     onClose();
   };
 
   if (!isOpen) return null;
 
   if (showPaymentForm) {
+    const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
+    
     return (
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl max-w-md w-full p-8 text-center">
@@ -187,7 +200,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
           </p>
           <div className="mb-6">
             <p className="text-lg font-semibold text-purple-600">
-              Total Amount: R{cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0}
+              Total Amount: R{totalFee}
             </p>
           </div>
           <div className="flex gap-4">
@@ -496,7 +509,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
                   value={formData.matricResults}
                   onChange={handleInputChange}
                   placeholder="e.g., APS: 35, Mathematics: 70%, English: 65%"
-                  className="w-full px-3 py-2 border border-slate-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
               </div>
             </div>
@@ -535,6 +548,37 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                   />
                 </div>
+              </div>
+            </div>
+
+            <div className="border-t pt-6">
+              <h4 className="text-lg font-semibold text-slate-800 mb-4">Document Upload</h4>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">ID Document Upload *</label>
+                <div className="border-2 border-dashed border-slate-300 rounded-xl p-6">
+                  <FileUploaderRegular
+                    sourceList="local, camera"
+                    filesViewMode="grid"
+                    gridShowFileNames={true}
+                    classNameUploader="uc-purple"
+                    pubkey="82dd7ec1dfce34a06bc3"
+                    onCommonUploadSuccess={(e) => {
+                      const urls = e.detail.successEntries.map(entry => entry.cdnUrl);
+                      setDocumentUrls(prev => [...prev, ...urls]);
+                    }}
+                  />
+                  {documentUrls.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-sm text-green-600 mb-2">✓ {documentUrls.length} document(s) uploaded</p>
+                      <div className="space-y-1">
+                        {documentUrls.map((url, index) => (
+                          <p key={index} className="text-xs text-slate-500 truncate">Document {index + 1}: {url}</p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 mt-2">Please upload a clear copy of your ID document or passport</p>
               </div>
             </div>
 
@@ -587,7 +631,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || documentUrls.length === 0}
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50"
               >
                 {isSubmitting ? 'Submitting...' : `Submit Application (R${cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0})`}
