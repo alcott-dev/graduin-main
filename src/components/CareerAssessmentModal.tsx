@@ -324,6 +324,7 @@ const CareerAssessmentModal = ({ onClose }: CareerAssessmentModalProps) => {
         <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
           <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
           <h3 className="text-xl font-semibold text-slate-800">Submitting Information...</h3>
+          <p className="text-slate-600 mt-2">Please wait while we process your information.</p>
         </div>
       </div>
     );

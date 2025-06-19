@@ -98,12 +98,16 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
   ];
 
   const searchSuggestions = [
-    { type: 'course', title: 'Computer Science', category: 'Technology' },
-    { type: 'course', title: 'Medicine', category: 'Health Sciences' },
-    { type: 'institution', title: 'University of Cape Town', category: 'Traditional University' },
-    { type: 'institution', title: 'University of Witwatersrand', category: 'Traditional University' },
-    { type: 'accommodation', title: 'Student Housing Johannesburg', category: 'Accommodation' },
-    { type: 'accommodation', title: 'Cape Town Student Residence', category: 'Accommodation' },
+    { type: 'course', title: 'Computer Science', category: 'Technology', page: 'course-finder' },
+    { type: 'course', title: 'Medicine', category: 'Health Sciences', page: 'course-finder' },
+    { type: 'course', title: 'Accounting', category: 'Business & Management', page: 'course-finder' },
+    { type: 'course', title: 'Engineering', category: 'Engineering', page: 'course-finder' },
+    { type: 'course', title: 'Law', category: 'Law', page: 'course-finder' },
+    { type: 'institution', title: 'University of Cape Town', category: 'Traditional University', page: 'institutions' },
+    { type: 'institution', title: 'University of Witwatersrand', category: 'Traditional University', page: 'institutions' },
+    { type: 'institution', title: 'University of Pretoria', category: 'Traditional University', page: 'institutions' },
+    { type: 'accommodation', title: 'Student Housing Johannesburg', category: 'Accommodation', page: 'accommodation' },
+    { type: 'accommodation', title: 'Cape Town Student Residence', category: 'Accommodation', page: 'accommodation' },
   ];
 
   const filteredSuggestions = searchSuggestions.filter(suggestion =>
@@ -129,6 +133,7 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
+      // Default to institutions page if no specific match
       onPageChange('institutions');
     }
     setShowSearchSuggestions(false);
@@ -137,13 +142,7 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
   const handleSuggestionClick = (suggestion: any) => {
     setSearchTerm(suggestion.title);
     setShowSearchSuggestions(false);
-    if (suggestion.type === 'course') {
-      onPageChange('course-finder');
-    } else if (suggestion.type === 'institution') {
-      onPageChange('institutions');
-    } else if (suggestion.type === 'accommodation') {
-      onPageChange('accommodation');
-    }
+    onPageChange(suggestion.page);
   };
 
   const handlePropertyClick = (property: any) => {
@@ -217,10 +216,10 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setShowSearchSuggestions(e.target.value.length > 0);
+                  setShowSearchSuggestions(e.target.value.length >= 3);
                 }}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                onFocus={() => searchTerm.length > 0 && setShowSearchSuggestions(true)}
+                onFocus={() => searchTerm.length >= 3 && setShowSearchSuggestions(true)}
                 className="w-full pl-12 pr-16 py-4 rounded-2xl border-0 bg-transparent focus:outline-none relative z-10"
               />
               <button 

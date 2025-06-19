@@ -27,6 +27,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [documentUrls, setDocumentUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -76,8 +77,38 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
     }
   };
 
+  const isFormValid = () => {
+    return formData.firstName && 
+           formData.lastName && 
+           formData.email && 
+           formData.phone && 
+           formData.idNumber && 
+           formData.dateOfBirth && 
+           formData.address && 
+           formData.city && 
+           formData.province && 
+           formData.postalCode && 
+           formData.guardianName && 
+           formData.guardianPhone && 
+           formData.guardianEmail && 
+           formData.previousSchool && 
+           formData.matricYear && 
+           formData.preferredCourse1 && 
+           documentUrls.length > 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!isFormValid()) {
+      toast({
+        title: "Form Incomplete",
+        description: "Please fill in all required fields and upload your documents.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -107,13 +138,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
       if (response.ok) {
         if (totalFee === 0) {
           // Free application - show success popup
-          toast({
-            title: "Application Submitted Successfully!",
-            description: "We have received your application.",
-          });
-          clearCart();
-          resetForm();
-          onClose();
+          setShowSuccess(true);
         } else {
           // Paid application - proceed to payment
           setShowPaymentForm(true);
@@ -186,8 +211,54 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
     onClose();
   };
 
+  const handleSuccessClose = () => {
+    setShowSuccess(false);
+    clearCart();
+    resetForm();
+    onClose();
+  };
+
   if (!isOpen) return null;
 
+  // Loading overlay
+  if (isSubmitting) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <h3 className="text-xl font-semibold text-slate-800">Submitting Application...</h3>
+          <p className="text-slate-600 mt-2">Please wait while we process your application.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Success modal for free applications
+  if (showSuccess) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+          <div className="p-8 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-slate-800 mb-4">Application Received!</h3>
+            <p className="text-slate-600 mb-6">We have received your application. Since the application fee is free, no payment is required.</p>
+            <button
+              onClick={handleSuccessClose}
+              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Payment form modal
   if (showPaymentForm) {
     const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
     
@@ -631,8 +702,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting || documentUrls.length === 0}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+                disabled={!isFormValid() || isSubmitting}
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Submitting...' : `Submit Application (R${cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0})`}
               </button>
