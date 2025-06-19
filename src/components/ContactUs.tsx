@@ -6,7 +6,7 @@ const ContactUs = () => {
     nameSurname: '',
     phoneNumber: '',
     emailAddress: '',
-    physicalAddress: '',
+    message: '',
     institutionName: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,7 +49,7 @@ const ContactUs = () => {
             nameSurname: '',
             phoneNumber: '',
             emailAddress: '',
-            physicalAddress: '',
+            message: '',
             institutionName: ''
           });
         }, 3000);
@@ -123,15 +123,15 @@ const ContactUs = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Physical Address *</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Your Message / Inquiry *</label>
                     <textarea
-                      name="physicalAddress"
-                      value={formData.physicalAddress}
+                      name="message"
+                      value={formData.message}
                       onChange={handleInputChange}
                       required
-                      rows={3}
+                      rows={4}
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                      placeholder="Enter your physical address"
+                      placeholder="Please describe your inquiry or message"
                     ></textarea>
                   </div>
 
@@ -165,6 +165,7 @@ const ContactUs = () => {
               <>
                 <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
                 <h3 className="text-xl font-semibold text-slate-800">Submitting...</h3>
+                <p className="text-slate-600 mt-2">Please wait while we send your message.</p>
               </>
             ) : (
               <>
@@ -244,15 +245,15 @@ const ContactUs = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Physical Address *</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Your Message / Inquiry *</label>
                 <textarea
-                  name="physicalAddress"
-                  value={formData.physicalAddress}
+                  name="message"
+                  value={formData.message}
                   onChange={handleInputChange}
                   required
-                  rows={3}
+                  rows={4}
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                  placeholder="Enter your physical address"
+                  placeholder="Please describe your inquiry or message"
                 ></textarea>
               </div>
 

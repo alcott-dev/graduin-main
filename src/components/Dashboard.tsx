@@ -1,5 +1,5 @@
 import { Search, ArrowRight, Building, BookOpen, Bed, FileText, Bot, Users, GraduationCap, Clock, ClipboardCheck, Star } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import AIAssistant from './AIAssistant';
 import CareerAssessmentModal from './CareerAssessmentModal';
 import ApplicationTrackingModal from './ApplicationTrackingModal';
@@ -55,45 +55,59 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
       title: 'Take Assessment Test', 
       icon: ClipboardCheck,
       description: 'Discover your career path',
-      isNew: true 
+      isNew: true,
+      buttonColor: 'bg-gradient-to-r from-emerald-400 to-teal-400',
+      bgColor: 'bg-gradient-to-br from-pink-50 to-rose-100'
     },
     { 
       id: 'course-finder', 
       title: 'Course Finder', 
       icon: BookOpen,
       description: 'Find your perfect course',
-      isNew: false 
+      isNew: false,
+      buttonColor: 'bg-gradient-to-r from-blue-400 to-indigo-400',
+      bgColor: 'bg-gradient-to-br from-blue-50 to-indigo-100'
     },
     { 
       id: 'institutions', 
       title: 'Universities', 
       icon: Building,
       description: 'Browse universities',
-      isNew: false 
+      isNew: false,
+      buttonColor: 'bg-gradient-to-r from-purple-400 to-pink-400',
+      bgColor: 'bg-gradient-to-br from-purple-50 to-violet-100'
     },
     { 
       id: 'accommodation', 
       title: 'Accommodation', 
       icon: Bed,
       description: 'Find student housing',
-      isNew: false 
+      isNew: false,
+      buttonColor: 'bg-gradient-to-r from-orange-400 to-red-400',
+      bgColor: 'bg-gradient-to-br from-orange-50 to-amber-100'
     },
     { 
       id: 'ai-assistant', 
       title: 'AI Assistant', 
       icon: Bot,
       description: 'Get instant help',
-      isNew: true 
+      isNew: true,
+      buttonColor: 'bg-gradient-to-r from-cyan-400 to-blue-400',
+      bgColor: 'bg-gradient-to-br from-cyan-50 to-sky-100'
     },
   ];
 
   const searchSuggestions = [
-    { type: 'course', title: 'Computer Science', category: 'Technology' },
-    { type: 'course', title: 'Medicine', category: 'Health Sciences' },
-    { type: 'institution', title: 'University of Cape Town', category: 'Traditional University' },
-    { type: 'institution', title: 'University of Witwatersrand', category: 'Traditional University' },
-    { type: 'accommodation', title: 'Student Housing Johannesburg', category: 'Accommodation' },
-    { type: 'accommodation', title: 'Cape Town Student Residence', category: 'Accommodation' },
+    { type: 'course', title: 'Computer Science', category: 'Technology', page: 'course-finder' },
+    { type: 'course', title: 'Medicine', category: 'Health Sciences', page: 'course-finder' },
+    { type: 'course', title: 'Accounting', category: 'Business & Management', page: 'course-finder' },
+    { type: 'course', title: 'Engineering', category: 'Engineering', page: 'course-finder' },
+    { type: 'course', title: 'Law', category: 'Law', page: 'course-finder' },
+    { type: 'institution', title: 'University of Cape Town', category: 'Traditional University', page: 'institutions' },
+    { type: 'institution', title: 'University of Witwatersrand', category: 'Traditional University', page: 'institutions' },
+    { type: 'institution', title: 'University of Pretoria', category: 'Traditional University', page: 'institutions' },
+    { type: 'accommodation', title: 'Student Housing Johannesburg', category: 'Accommodation', page: 'accommodation' },
+    { type: 'accommodation', title: 'Cape Town Student Residence', category: 'Accommodation', page: 'accommodation' },
   ];
 
   const filteredSuggestions = searchSuggestions.filter(suggestion =>
@@ -119,6 +133,7 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
 
   const handleSearch = () => {
     if (searchTerm.trim()) {
+      // Default to institutions page if no specific match
       onPageChange('institutions');
     }
     setShowSearchSuggestions(false);
@@ -127,13 +142,7 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
   const handleSuggestionClick = (suggestion: any) => {
     setSearchTerm(suggestion.title);
     setShowSearchSuggestions(false);
-    if (suggestion.type === 'course') {
-      onPageChange('course-finder');
-    } else if (suggestion.type === 'institution') {
-      onPageChange('institutions');
-    } else if (suggestion.type === 'accommodation') {
-      onPageChange('accommodation');
-    }
+    onPageChange(suggestion.page);
   };
 
   const handlePropertyClick = (property: any) => {
@@ -184,39 +193,42 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
           </button>
           <button 
             onClick={() => setShowAI(true)}
-            className="relative flex items-center gap-2 px-3 md:px-4 py-2 text-slate-600 hover:text-purple-600 transition-colors text-sm md:text-base border-2 border-transparent bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 bg-clip-border rounded-full"
-            style={{
-              background: 'linear-gradient(white, white) padding-box, linear-gradient(45deg, #8b5cf6, #ec4899, #3b82f6) border-box',
-              boxShadow: '0 0 20px rgba(139, 92, 246, 0.3)'
-            }}
+            className="flex items-center gap-2 px-3 md:px-4 py-2 text-slate-600 hover:text-purple-600 transition-colors text-sm md:text-base"
           >
             <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-2 py-0.5 rounded text-xs font-bold">New</span>
             AI Assistant
           </button>
         </div>
 
-        {/* Search Bar with Suggestions */}
+        {/* Search Bar with Gradient Border and Glow */}
         <div className="max-w-2xl mx-auto mb-12 relative">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400" size={20} />
-            <input
-              type="text"
-              placeholder="Search courses, universities, or accommodation..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setShowSearchSuggestions(e.target.value.length > 0);
-              }}
-              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              onFocus={() => searchTerm.length > 0 && setShowSearchSuggestions(true)}
-              className="w-full pl-12 pr-16 py-4 rounded-2xl border border-slate-200 bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-            />
-            <button 
-              onClick={handleSearch}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
-            >
-              <ArrowRight size={20} className="text-slate-600" />
-            </button>
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-2xl p-[2px] animate-pulse">
+              <div className="bg-white rounded-2xl h-full w-full"></div>
+            </div>
+            <div className="relative bg-white rounded-2xl" style={{
+              boxShadow: '0 0 30px rgba(139, 92, 246, 0.4), 0 0 60px rgba(139, 92, 246, 0.2)'
+            }}>
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 z-10" size={20} />
+              <input
+                type="text"
+                placeholder="Search courses, universities, or accommodation..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowSearchSuggestions(e.target.value.length >= 3);
+                }}
+                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                onFocus={() => searchTerm.length >= 3 && setShowSearchSuggestions(true)}
+                className="w-full pl-12 pr-16 py-4 rounded-2xl border-0 bg-transparent focus:outline-none relative z-10"
+              />
+              <button 
+                onClick={handleSearch}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors z-10"
+              >
+                <ArrowRight size={20} className="text-slate-600" />
+              </button>
+            </div>
           </div>
 
           {/* Search Suggestions Dropdown */}
@@ -242,14 +254,15 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-xl font-semibold text-slate-600 mb-6">As Featured On</h2>
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 overflow-hidden">
-            <div className="flex items-center justify-center gap-8 transition-transform duration-1000 ease-in-out">
+            <div className="flex items-center justify-center gap-4 md:gap-8 transition-transform duration-1000 ease-in-out">
               {getCurrentLogos().map((logo, index) => (
-                <img 
-                  key={`${currentLogoIndex}-${index}`}
-                  src={logo} 
-                  alt={`Featured Logo ${index + 1}`} 
-                  className="h-12 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity"
-                />
+                <div key={`${currentLogoIndex}-${index}`} className="flex-1 flex justify-center">
+                  <img 
+                    src={logo} 
+                    alt={`Featured Logo ${index + 1}`} 
+                    className="h-12 md:h-20 w-auto max-w-full object-contain opacity-70 hover:opacity-100 transition-opacity"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -265,12 +278,12 @@ const Dashboard = ({ onPageChange }: DashboardProps) => {
               className="relative group cursor-pointer"
               onClick={() => handleCardClick(card.id)}
             >
-              <div className="aspect-square bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 card-hover">
-                <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-xl mb-2 md:mb-4 mx-auto flex items-center justify-center">
+              <div className={`aspect-square ${card.bgColor} rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 card-hover`}>
+                <div className="w-8 h-8 md:w-12 md:h-12 bg-white/80 rounded-xl mb-2 md:mb-4 mx-auto flex items-center justify-center">
                   <card.icon className="text-purple-600" size={16} />
                 </div>
                 <h3 className="font-medium text-slate-700 text-center text-xs md:text-sm mb-1">{card.title}</h3>
-                <p className="text-xs text-slate-500 text-center">{card.description}</p>
+                <p className="text-xs text-slate-500 text-center mb-2">{card.description}</p>
                 {card.isNew && (
                   <span className="absolute -top-2 -right-2 bg-purple-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                     New

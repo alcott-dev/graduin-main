@@ -17,6 +17,7 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [userName, setUserName] = useState('');
+  const [conversationHistory, setConversationHistory] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Load chat history from localStorage on component mount
@@ -95,65 +96,106 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
   };
 
   const isContactRequest = (text: string) => {
-    const contactKeywords = ['contact support', 'speak to someone', 'human help', 'customer service', 'support team', 'help me contact'];
+    const contactKeywords = ['contact support', 'speak to someone', 'human help', 'customer service', 'support team', 'help me contact', 'talk to agent', 'live chat', 'personal assistance'];
     return contactKeywords.some(keyword => text.toLowerCase().includes(keyword));
+  };
+
+  const hasAskedBefore = (userInput: string) => {
+    return conversationHistory.some(prevInput => 
+      prevInput.toLowerCase().trim() === userInput.toLowerCase().trim()
+    );
   };
 
   const generateResponse = (userInput: string): string => {
     const input = userInput.toLowerCase();
+    const isRepeat = hasAskedBefore(userInput);
 
     // Handle greetings
     if (isGreeting(input)) {
+      if (isRepeat) {
+        return "I see you're greeting me again! Is there something specific I can help you with regarding your university journey or Graduin's services?";
+      }
       return "Hello! Welcome to Graduin. I'm here to help you with anything related to our university application platform, course finder, student accommodation, and more. What would you like assistance with today?";
     }
 
     // Handle contact requests
     if (isContactRequest(input)) {
+      if (isRepeat) {
+        return "You mentioned wanting to speak with our support team earlier. Would you like me to connect you with personalized assistance right now?";
+      }
       return "I'd be happy to connect you with our support team for further assistance. Please use the contact button below to reach out to our support team directly.";
     }
 
     // Handle university/institution queries
     if (input.includes('university') || input.includes('institution') || input.includes('college')) {
-      return "Graduin partners with over 200+ South African institutions including traditional universities, universities of technology, and private institutions. You can browse all available institutions on our Institutions page, where you can apply to multiple universities with a single application. Would you like help finding specific institutions or courses?";
+      if (isRepeat) {
+        return "I notice you're asking about universities again. Are you looking for something more specific? We have partnerships with 20 traditional universities, 6 universities of technology, and 25 private institutions. Would you like personalized guidance to find the right fit for you?";
+      }
+      return "Graduin partners with over 50+ South African institutions including traditional universities, universities of technology, and private institutions. You can browse all available institutions on our Institutions page, where you can apply to multiple universities with a single application. Would you like help finding specific institutions or courses?";
     }
 
     // Handle course queries
     if (input.includes('course') || input.includes('program') || input.includes('study') || input.includes('degree')) {
+      if (isRepeat) {
+        return "You're still exploring course options? That's great! Would you benefit from personalized course recommendations based on your interests and career goals? I can connect you with our support team for tailored guidance.";
+      }
       return "Our Course Finder helps you discover the perfect program for your interests and career goals. We offer courses across various fields including Engineering, Business, Health Sciences, Information Technology, Arts, and more. You can also take our Career Assessment to get personalized course recommendations. Would you like me to guide you to the Course Finder?";
     }
 
     // Handle accommodation queries
     if (input.includes('accommodation') || input.includes('housing') || input.includes('residence') || input.includes('room')) {
+      if (isRepeat) {
+        return "Still searching for the perfect accommodation? Our team can provide personalized assistance to help you find housing that meets your specific needs and budget. Would you like me to connect you with our accommodation specialists?";
+      }
       return "Graduin offers a comprehensive accommodation marketplace with properties across South Africa. We have student residences, shared accommodation, and private rentals near major universities. You can search by location, price range, and amenities. Our accommodation page has detailed listings with photos, prices, and contact information. Need help finding accommodation in a specific area?";
     }
 
     // Handle application queries
     if (input.includes('apply') || input.includes('application') || input.includes('admission')) {
+      if (isRepeat) {
+        return "I see you're still interested in the application process. Would you like step-by-step guidance tailored to your specific situation? Our support team can provide personalized assistance with your applications.";
+      }
       return "With Graduin, you can apply to multiple universities and institutions with just one application! Our platform streamlines the entire process - simply fill out your information once, select your preferred institutions, and submit. You can track your applications and receive updates directly through our platform. Would you like help starting an application?";
     }
 
     // Handle career assessment queries
     if (input.includes('career') || input.includes('assessment') || input.includes('test') || input.includes('guidance')) {
+      if (isRepeat) {
+        return "Considering the career assessment again? It's a valuable tool! Would you like personalized career guidance from our team to complement the assessment results?";
+      }
       return "Our Career Assessment Test helps you discover your ideal career path and study recommendations based on your interests, strengths, and goals. The assessment analyzes your preferences and provides personalized suggestions for courses and institutions. You can access this free tool from our Course Finder page. Would you like to take the assessment?";
     }
 
     // Handle pricing/cost queries
     if (input.includes('price') || input.includes('cost') || input.includes('fee') || input.includes('money')) {
+      if (isRepeat) {
+        return "Cost is definitely an important factor in your decision. Would you like personalized financial guidance and information about funding options available to you?";
+      }
       return "Application fees vary by institution, ranging from free applications to around R440. Many institutions offer affordable options, and we provide detailed pricing information for each institution. For accommodation, prices typically range from R2,500 to R12,000+ per month depending on location and amenities. You can filter by price range on both our Institutions and Accommodation pages.";
     }
 
     // Handle location queries
     if (input.includes('johannesburg') || input.includes('cape town') || input.includes('durban') || input.includes('pretoria') || input.includes('location')) {
+      if (isRepeat) {
+        return "Looking at locations again? Each city offers unique opportunities. Would you like personalized advice about which location might be best for your specific field of study and career goals?";
+      }
       return "Graduin covers institutions and accommodation across all major South African cities including Johannesburg, Cape Town, Durban, Pretoria, and more. You can search by specific locations on our platform. Many of our accommodation listings are strategically located near major universities for easy access to campus.";
     }
 
     // Handle general help
     if (input.includes('help') || input.includes('how') || input.includes('what')) {
+      if (isRepeat) {
+        return "I'm here to help! Since you're asking again, would you prefer to speak with one of our human specialists who can provide more detailed, personalized assistance?";
+      }
       return "I can help you with:\n• Finding and applying to universities\n• Discovering courses and career paths\n• Searching for student accommodation\n• Taking career assessments\n• Understanding application processes\n• General information about Graduin's services\n\nWhat specific area would you like help with?";
     }
 
-    // Default response for out-of-scope queries
-    return "I'm afraid that's outside my area of expertise. I specialize in helping with Graduin's services including university applications, course selection, student accommodation, and career guidance. If you need further assistance beyond what I can provide, please contact our support team using the button below.";
+    // Default response for repeated or out-of-scope queries
+    if (isRepeat) {
+      return "I notice you're asking about this again. Would you like me to connect you with our support team for more personalized assistance? They can provide detailed guidance tailored to your specific needs.";
+    }
+
+    return "I'm here to help with Graduin's services including university applications, course selection, student accommodation, and career guidance. For more specialized assistance beyond what I can provide, would you like me to connect you with our support team?";
   };
 
   const sendMessage = async () => {
@@ -167,6 +209,7 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    setConversationHistory(prev => [...prev, inputMessage]);
     setInputMessage('');
     setIsLoading(true);
 
@@ -182,7 +225,7 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
     // Add user's name to response if we have it
     if (userName || detectedName) {
       const name = detectedName || userName;
-      if (!responseText.includes(name)) {
+      if (!responseText.includes(name) && !responseText.includes('I notice') && !responseText.includes('You mentioned')) {
         responseText = `${name}, ${responseText}`;
       }
     }
@@ -253,7 +296,7 @@ const AIAssistant = ({ onClose }: AIAssistantProps) => {
                     <User size={16} className="mt-1 text-white/80" />
                   )}
                 </div>
-                {!message.isUser && (isContactRequest(message.text) || message.text.includes('contact our support team')) && (
+                {!message.isUser && (isContactRequest(message.text) || message.text.includes('connect you with our support team') || message.text.includes('personalized assistance')) && (
                   <button
                     onClick={handleContactSupport}
                     className="mt-2 bg-purple-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-purple-600 transition-colors"

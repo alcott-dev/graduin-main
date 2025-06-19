@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { X, Check, Upload, MapPin, Star } from 'lucide-react';
+import { X, Check } from 'lucide-react';
+import { FileUploaderRegular } from '@uploadcare/react-uploader';
+import '@uploadcare/react-uploader/core.css';
 
 interface AccommodationListingModalProps {
   isOpen: boolean;
@@ -12,7 +14,6 @@ interface FormData {
   email: string;
   phone: string;
   idNumber: string;
-  idDocument: File | null;
   
   // Property Details
   propertyName: string;
@@ -25,7 +26,7 @@ interface FormData {
   price: number;
   description: string;
   amenities: string[];
-  photos: File[];
+  photoUrls: string[];
   
   // Subscription
   selectedTier: 'basic' | 'standard' | 'premium' | null;
@@ -34,12 +35,12 @@ interface FormData {
 const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModalProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
     phone: '',
     idNumber: '',
-    idDocument: null,
     propertyName: '',
     address: '',
     city: '',
@@ -50,7 +51,7 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
     price: 0,
     description: '',
     amenities: [],
-    photos: [],
+    photoUrls: [],
     selectedTier: null
   });
 
@@ -63,10 +64,9 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
         '1 listing allowed',
         'Basic contact details (email or WhatsApp only)',
         'Limited photo uploads (up to 5)',
-        'No visibility boost',
-        'Platform branding'
+        'No visibility boost'
       ],
-      target: 'Small landlords, test users'
+      target: 'Small landlords'
     },
     {
       id: 'standard',
@@ -77,9 +77,7 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
         'Full contact info access',
         'More photos (up to 10)',
         'Google Maps location integration',
-        'Moderate visibility boost',
-        'Reviews and rating enabled',
-        'Chat feature on platform'
+        'Moderate visibility boost'
       ],
       target: 'Owners with multiple rooms'
     },
@@ -112,33 +110,32 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
-    const formSubmitData = new FormData();
+    setIsSubmitting(true);
     
-    // Add all form fields
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key === 'photos') {
-        value.forEach((file: File, index: number) => {
-          formSubmitData.append(`photo_${index}`, file);
-        });
-      } else if (key === 'idDocument' && value) {
-        formSubmitData.append('id_document', value);
-      } else if (key === 'amenities') {
-        formSubmitData.append(key, value.join(', '));
-      } else {
-        formSubmitData.append(key, value.toString());
-      }
-    });
+    const submissionData = {
+      ...formData,
+      uploadedPhotos: formData.photoUrls.join(', '),
+      amenitiesList: formData.amenities.join(', '),
+      submissionDate: new Date().toISOString(),
+      _subject: 'Property Listing Application - Graduin',
+      _captcha: 'false'
+    };
 
     try {
       await fetch('https://formsubmit.co/submissions@graduin.app', {
         method: 'POST',
-        body: formSubmitData
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData)
       });
 
       setShowSuccess(true);
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('There was an error submitting your application. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -155,6 +152,19 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
     
     onClose();
   };
+
+  // Loading overlay
+  if (isSubmitting) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <h3 className="text-xl font-semibold text-slate-800">Submitting Application...</h3>
+          <p className="text-slate-600 mt-2">Please wait while we process your listing application.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (showSuccess) {
     return (
@@ -268,26 +278,6 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
                   onChange={(e) => setFormData(prev => ({ ...prev, idNumber: e.target.value }))}
                   className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500"
                 />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Upload ID Document *</label>
-              <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center">
-                <Upload className="mx-auto mb-2 text-slate-400" size={48} />
-                <p className="text-slate-600 mb-2">Upload your ID document for verification</p>
-                <input
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={(e) => setFormData(prev => ({ ...prev, idDocument: e.target.files?.[0] || null }))}
-                  className="hidden"
-                  id="id-upload"
-                />
-                <label htmlFor="id-upload" className="button-primary cursor-pointer">
-                  Choose File
-                </label>
-                {formData.idDocument && (
-                  <p className="text-sm text-green-600 mt-2">✓ {formData.idDocument.name}</p>
-                )}
               </div>
             </div>
           </div>
@@ -410,22 +400,20 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">Property Photos *</label>
-              <div className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center">
-                <Upload className="mx-auto mb-2 text-slate-400" size={48} />
-                <p className="text-slate-600 mb-2">Upload property photos (minimum 3 photos)</p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => setFormData(prev => ({ ...prev, photos: Array.from(e.target.files || []) }))}
-                  className="hidden"
-                  id="photos-upload"
+              <div className="border-2 border-dashed border-slate-300 rounded-xl p-6">
+                <FileUploaderRegular
+                  sourceList="local, camera, facebook, gdrive"
+                  filesViewMode="grid"
+                  gridShowFileNames={true}
+                  classNameUploader="uc-purple"
+                  pubkey="82dd7ec1dfce34a06bc3"
+                  onCommonUploadSuccess={(e) => {
+                    const urls = e.detail.successEntries.map(entry => entry.cdnUrl);
+                    setFormData(prev => ({ ...prev, photoUrls: [...prev.photoUrls, ...urls] }));
+                  }}
                 />
-                <label htmlFor="photos-upload" className="button-primary cursor-pointer">
-                  Choose Photos
-                </label>
-                {formData.photos.length > 0 && (
-                  <p className="text-sm text-green-600 mt-2">✓ {formData.photos.length} photos selected</p>
+                {formData.photoUrls.length > 0 && (
+                  <p className="text-sm text-green-600 mt-2">✓ {formData.photoUrls.length} photos uploaded</p>
                 )}
               </div>
             </div>

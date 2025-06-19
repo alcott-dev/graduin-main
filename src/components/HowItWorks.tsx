@@ -156,29 +156,6 @@ const HowItWorks = () => {
           </div>
         </div>
 
-        {/* Media Section */}
-        <div className="mb-16 bg-white rounded-3xl shadow-sm border border-slate-200 p-8 md:p-12">
-          <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">Graduin on eNCA</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="aspect-video bg-gradient-to-br from-slate-200 to-slate-300 rounded-2xl flex items-center justify-center">
-              <PlayCircle className="text-slate-500" size={64} />
-            </div>
-            <div>
-              <h3 className="text-2xl font-semibold text-slate-800 mb-4">Featured on eNCA News</h3>
-              <p className="text-lg text-slate-600 mb-6">
-                Graduin was featured on eNCA, highlighting our innovative approach to simplifying university applications for South African students.
-              </p>
-              <p className="text-slate-600 mb-6">
-                The feature showcased how our platform is transforming the higher education landscape by making applications more accessible and efficient.
-              </p>
-              <button className="button-primary">
-                <PlayCircle size={20} className="mr-2" />
-                Watch Interview
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* CTA Section */}
         <div className="text-center bg-gradient-to-r from-purple-500 to-blue-500 rounded-3xl p-12 text-white">
           <h2 className="text-3xl font-bold mb-4">Ready to Simplify Your Applications?</h2>

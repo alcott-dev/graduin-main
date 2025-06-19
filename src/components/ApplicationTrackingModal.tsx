@@ -13,10 +13,21 @@ const ApplicationTrackingModal = ({ onClose }: ApplicationTrackingModalProps) =>
     phoneNumber: ''
   });
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setShowSuccess(true);
+    setIsSubmitting(true);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setShowSuccess(true);
+    } catch (error) {
+      console.error('Error submitting tracking request:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,6 +36,19 @@ const ApplicationTrackingModal = ({ onClose }: ApplicationTrackingModalProps) =>
       [e.target.name]: e.target.value
     }));
   };
+
+  // Loading overlay
+  if (isSubmitting) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <h3 className="text-xl font-semibold text-slate-800">Checking Application Status...</h3>
+          <p className="text-slate-600 mt-2">Please wait while we search for your application.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (showSuccess) {
     return (
