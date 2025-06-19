@@ -63,12 +63,12 @@ const CourseFinder = () => {
   ];
 
   const popularFields = [
-    { name: 'Business & Management', courses: '150+ courses', color: 'bg-blue-500', icon: '💼' },
-    { name: 'Engineering', courses: '120+ courses', color: 'bg-green-500', icon: '⚙️' },
-    { name: 'Health Sciences', courses: '85+ courses', color: 'bg-red-500', icon: '🏥' },
-    { name: 'Information Technology', courses: '95+ courses', color: 'bg-purple-500', icon: '💻' },
-    { name: 'Education', courses: '75+ courses', color: 'bg-orange-500', icon: '📚' },
-    { name: 'Law', courses: '45+ courses', color: 'bg-indigo-500', icon: '⚖️' },
+    { name: 'Business & Management', color: 'bg-blue-500', icon: '💼' },
+    { name: 'Engineering', color: 'bg-green-500', icon: '⚙️' },
+    { name: 'Health Sciences', color: 'bg-red-500', icon: '🏥' },
+    { name: 'Information Technology', color: 'bg-purple-500', icon: '💻' },
+    { name: 'Education', color: 'bg-orange-500', icon: '📚' },
+    { name: 'Law', color: 'bg-indigo-500', icon: '⚖️' },
   ];
 
   const searchSuggestions = courses.filter(course =>
@@ -110,6 +110,20 @@ const CourseFinder = () => {
   const handleSuggestionClick = (course: any) => {
     setSearchTerm(course.title);
     setShowSearchSuggestions(false);
+    
+    // Scroll to results
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  const handleSearch = () => {
+    setShowSearchSuggestions(false);
+    
+    // Scroll to results
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   const handleCareerAssessment = () => {
@@ -139,9 +153,10 @@ const CourseFinder = () => {
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setShowSearchSuggestions(e.target.value.length > 0);
+                setShowSearchSuggestions(e.target.value.length >= 3);
               }}
-              onFocus={() => searchTerm.length > 0 && setShowSearchSuggestions(true)}
+              onFocus={() => searchTerm.length >= 3 && setShowSearchSuggestions(true)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             
@@ -175,7 +190,6 @@ const CourseFinder = () => {
               >
                 <div className="text-3xl mb-3">{field.icon}</div>
                 <h3 className="font-semibold text-slate-800 mb-2 text-sm">{field.name}</h3>
-                <p className="text-xs text-slate-500">{field.courses}</p>
               </div>
             ))}
           </div>

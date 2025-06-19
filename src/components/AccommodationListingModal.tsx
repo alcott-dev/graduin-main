@@ -35,6 +35,7 @@ interface FormData {
 const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModalProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
@@ -63,10 +64,9 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
         '1 listing allowed',
         'Basic contact details (email or WhatsApp only)',
         'Limited photo uploads (up to 5)',
-        'No visibility boost',
-        'Platform branding'
+        'No visibility boost'
       ],
-      target: 'Small landlords, test users'
+      target: 'Small landlords'
     },
     {
       id: 'standard',
@@ -77,9 +77,7 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
         'Full contact info access',
         'More photos (up to 10)',
         'Google Maps location integration',
-        'Moderate visibility boost',
-        'Reviews and rating enabled',
-        'Chat feature on platform'
+        'Moderate visibility boost'
       ],
       target: 'Owners with multiple rooms'
     },
@@ -112,6 +110,8 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
+    
     const submissionData = {
       ...formData,
       uploadedPhotos: formData.photoUrls.join(', '),
@@ -134,6 +134,8 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('There was an error submitting your application. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -150,6 +152,19 @@ const AccommodationListingModal = ({ isOpen, onClose }: AccommodationListingModa
     
     onClose();
   };
+
+  // Loading overlay
+  if (isSubmitting) {
+    return (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
+          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <h3 className="text-xl font-semibold text-slate-800">Submitting Application...</h3>
+          <p className="text-slate-600 mt-2">Please wait while we process your listing application.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (showSuccess) {
     return (

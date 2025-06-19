@@ -165,6 +165,7 @@ const ContactUs = () => {
               <>
                 <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
                 <h3 className="text-xl font-semibold text-slate-800">Submitting...</h3>
+                <p className="text-slate-600 mt-2">Please wait while we send your message.</p>
               </>
             ) : (
               <>
