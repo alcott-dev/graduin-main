@@ -78,23 +78,20 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
   };
 
   const isFormValid = () => {
-    return formData.firstName && 
-           formData.lastName && 
-           formData.email && 
-           formData.phone && 
-           formData.idNumber && 
-           formData.dateOfBirth && 
-           formData.address && 
-           formData.city && 
-           formData.province && 
-           formData.postalCode && 
-           formData.guardianName && 
-           formData.guardianPhone && 
-           formData.guardianEmail && 
-           formData.previousSchool && 
-           formData.matricYear && 
-           formData.preferredCourse1 && 
-           documentUrls.length > 0;
+    const requiredFields = [
+      'firstName', 'lastName', 'email', 'phone', 'idNumber', 'dateOfBirth',
+      'address', 'city', 'province', 'postalCode', 'guardianName', 
+      'guardianPhone', 'guardianEmail', 'previousSchool', 'matricYear', 'preferredCourse1'
+    ];
+    
+    const hasRequiredFields = requiredFields.every(field => {
+      const value = formData[field as keyof typeof formData];
+      return value && value.toString().trim() !== '';
+    });
+    
+    const hasDocuments = documentUrls.length > 0;
+    
+    return hasRequiredFields && hasDocuments;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -702,8 +699,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
               </button>
               <button
                 type="submit"
-                disabled={!isFormValid() || isSubmitting}
-                className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-200"
               >
                 {isSubmitting ? 'Submitting...' : `Submit Application (R${cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0})`}
               </button>

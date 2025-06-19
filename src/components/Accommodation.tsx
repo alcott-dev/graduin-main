@@ -1,4 +1,4 @@
-import { Search, MapPin, Bed, Wifi, Car, Shield, Plus } from 'lucide-react';
+import { Search, MapPin, Wifi, Car, Shield, Bed, Plus } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import AccommodationListingModal from './AccommodationListingModal';
 import PropertyModal from './PropertyModal';
@@ -217,7 +217,7 @@ const Accommodation = () => {
                   <div className="h-48 bg-cover bg-center relative" style={{backgroundImage: `url(${property.image})`}}>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     {property.tag && (
-                      <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                      <div className="absolute top-3 right-3 bg-white text-yellow-600 px-3 py-1 rounded-full text-xs font-bold">
                         {property.tag}
                       </div>
                     )}
