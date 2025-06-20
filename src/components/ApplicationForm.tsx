@@ -25,9 +25,6 @@ interface ApplicationFormProps {
 const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, selectedInstitution }) => {
   const { cartItems, addToCart, removeFromCart, clearCart, getTotalFee } = useApplicationCart();
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPaymentForm, setShowPaymentForm] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [documentUrls, setDocumentUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -51,7 +48,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
     preferredCourse3: '',
     motivation: '',
     accommodation: 'no',
-    financialAid: 'no'
+    financialAid: 'no',
+    studyMode: 'fulltime'
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -77,72 +75,104 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
     }
   };
 
-  const isFormValid = () => {
-    const requiredFields = [
-      'firstName', 'lastName', 'email', 'phone', 'idNumber', 'dateOfBirth',
-      'address', 'city', 'province', 'postalCode', 'guardianName', 
-      'guardianPhone', 'guardianEmail', 'previousSchool', 'matricYear', 'preferredCourse1'
-    ];
+  const calculateDynamicAmount = () => {
+    let baseAmount = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
     
-    const hasRequiredFields = requiredFields.every(field => {
-      const value = formData[field as keyof typeof formData];
-      return value && value.toString().trim() !== '';
-    });
+    // Add study mode fee
+    if (formData.studyMode === 'fulltime') {
+      baseAmount += 500; // Additional processing fee for full-time
+    } else if (formData.studyMode === 'parttime') {
+      baseAmount += 300; // Additional processing fee for part-time
+    }
     
-    const hasDocuments = documentUrls.length > 0;
+    // Add accommodation fee if needed
+    if (formData.accommodation === 'yes') {
+      baseAmount += 200; // Accommodation processing fee
+    }
     
-    return hasRequiredFields && hasDocuments;
+    return baseAmount;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!isFormValid()) {
-      toast({
-        title: "Form Incomplete",
-        description: "Please fill in all required fields and upload your documents.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
+    const totalAmount = calculateDynamicAmount();
+    const institutions = cartItems.length > 0 ? cartItems : [selectedInstitution];
+    
+    // Prepare form data for FormSubmit
+    const submissionData = {
+      // Hidden fields for FormSubmit configuration
+      _captcha: 'false',
+      _template: 'table',
+      _next: 'https://graduin.app/thank-you',
+      _subject: 'University Application Submission - Graduin',
+      
+      // Application data
+      full_name: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      phone: formData.phone,
+      id_number: formData.idNumber,
+      date_of_birth: formData.dateOfBirth,
+      address: `${formData.address}, ${formData.city}, ${formData.province}, ${formData.postalCode}`,
+      guardian_name: formData.guardianName,
+      guardian_phone: formData.guardianPhone,
+      guardian_email: formData.guardianEmail,
+      previous_school: formData.previousSchool,
+      matric_year: formData.matricYear,
+      matric_results: formData.matricResults,
+      preferred_course_1: formData.preferredCourse1,
+      preferred_course_2: formData.preferredCourse2,
+      preferred_course_3: formData.preferredCourse3,
+      motivation: formData.motivation,
+      study_mode: formData.studyMode,
+      accommodation_needed: formData.accommodation,
+      financial_aid_needed: formData.financialAid,
+      institutions: institutions.map(inst => inst?.name).join(', '),
+      institution_types: institutions.map(inst => inst?.type).join(', '),
+      total_application_fee: totalAmount,
+      uploaded_documents: documentUrls.join(', '),
+      submission_date: new Date().toISOString(),
+      application_id: `APP-${Date.now()}`
+    };
 
     try {
-      const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
-      const institutions = cartItems.length > 0 ? cartItems : [selectedInstitution];
-      
-      const applicationData = {
-        ...formData,
-        institutions: institutions.map(inst => inst?.name).join(', '),
-        institutionTypes: institutions.map(inst => inst?.type).join(', '),
-        totalApplicationFee: totalFee,
-        uploadedDocuments: documentUrls.join(', '),
-        submissionDate: new Date().toISOString(),
-        applicationId: `APP-${Date.now()}`,
-        _subject: 'University Application Submission - Graduin',
-        _captcha: 'false'
-      };
+      // Create a form element for FormSubmit
+      const form = document.createElement('form');
+      form.action = 'https://formsubmit.co/submissions@graduin.app';
+      form.method = 'POST';
+      form.target = '_blank';
+      form.style.display = 'none';
 
-      const response = await fetch('https://formsubmit.co/submissions@graduin.app', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(applicationData)
+      // Add all form fields
+      Object.entries(submissionData).forEach(([key, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = String(value);
+        form.appendChild(input);
       });
 
-      if (response.ok) {
-        if (totalFee === 0) {
-          // Free application - show success popup
-          setShowSuccess(true);
-        } else {
-          // Paid application - proceed to payment
-          setShowPaymentForm(true);
-        }
-      } else {
-        throw new Error('Failed to submit application');
-      }
+      // Submit to FormSubmit
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+
+      // Show success message
+      toast({
+        title: "Application Submitted",
+        description: "Your application has been submitted successfully. Redirecting to payment...",
+      });
+
+      // Redirect to PayFast after a short delay
+      setTimeout(() => {
+        redirectToPayFast(totalAmount, institutions);
+      }, 2000);
+
+      // Clear form and close modal
+      clearCart();
+      resetForm();
+      onClose();
+
     } catch (error) {
       console.error('Error submitting application:', error);
       toast({
@@ -150,45 +180,35 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
         description: "There was an error submitting your application. Please try again.",
         variant: "destructive"
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      firstName: '', lastName: '', email: '', phone: '', idNumber: '',
-      dateOfBirth: '', address: '', city: '', province: '', postalCode: '',
-      guardianName: '', guardianPhone: '', guardianEmail: '', previousSchool: '',
-      matricYear: '', matricResults: '', preferredCourse1: '', preferredCourse2: '',
-      preferredCourse3: '', motivation: '', accommodation: 'no', financialAid: 'no'
-    });
-    setDocumentUrls([]);
-  };
-
-  const handlePayment = () => {
-    const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
-    const institutionNames = cartItems.length > 0 
-      ? cartItems.map(item => item.name).join(', ')
-      : selectedInstitution?.name || '';
-
-    // Create PayFast payment form
+  const redirectToPayFast = (amount: number, institutions: any[]) => {
+    const institutionNames = institutions.map(inst => inst?.name || '').join(', ');
+    
+    // PayFast credentials (using the ones already in your code)
+    const merchantId = '13208346';
+    const merchantKey = 'xux5xm3dc4fec';
+    
+    // Create PayFast form
     const form = document.createElement('form');
     form.action = 'https://www.payfast.co.za/eng/process';
     form.method = 'post';
-    form.target = '_blank';
+    form.style.display = 'none';
 
     const fields = {
-      merchant_id: '13208346',
-      merchant_key: 'xux5xm3dc4fec',
-      return_url: 'https://graduin.app/success',
-      cancel_url: 'https://graduin.app/cancelled',
+      merchant_id: merchantId,
+      merchant_key: merchantKey,
+      return_url: 'https://graduin.app/payment-success',
+      cancel_url: 'https://graduin.app/payment-cancelled',
       notify_url: 'https://graduin.app/api/payfast-notify',
-      amount: totalFee.toFixed(2),
+      amount: amount.toFixed(2),
       item_name: `University Application Fee - ${institutionNames}`,
+      item_description: `Application processing fee for ${institutionNames}`,
       name_first: formData.firstName,
       name_last: formData.lastName,
-      email_address: formData.email
+      email_address: formData.email,
+      cell_number: formData.phone
     };
 
     Object.entries(fields).forEach(([key, value]) => {
@@ -202,93 +222,21 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
-
-    clearCart();
-    resetForm();
-    onClose();
   };
 
-  const handleSuccessClose = () => {
-    setShowSuccess(false);
-    clearCart();
-    resetForm();
-    onClose();
+  const resetForm = () => {
+    setFormData({
+      firstName: '', lastName: '', email: '', phone: '', idNumber: '',
+      dateOfBirth: '', address: '', city: '', province: '', postalCode: '',
+      guardianName: '', guardianPhone: '', guardianEmail: '', previousSchool: '',
+      matricYear: '', matricResults: '', preferredCourse1: '', preferredCourse2: '',
+      preferredCourse3: '', motivation: '', accommodation: 'no', financialAid: 'no',
+      studyMode: 'fulltime'
+    });
+    setDocumentUrls([]);
   };
 
   if (!isOpen) return null;
-
-  // Loading overlay
-  if (isSubmitting) {
-    return (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 text-center">
-          <div className="w-16 h-16 border-4 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
-          <h3 className="text-xl font-semibold text-slate-800">Submitting Application...</h3>
-          <p className="text-slate-600 mt-2">Please wait while we process your application.</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Success modal for free applications
-  if (showSuccess) {
-    return (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
-          <div className="p-8 text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-slate-800 mb-4">Application Received!</h3>
-            <p className="text-slate-600 mb-6">We have received your application. Since the application fee is free, no payment is required.</p>
-            <button
-              onClick={handleSuccessClose}
-              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 text-white py-3 rounded-xl font-medium hover:shadow-lg transition-all duration-200"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Payment form modal
-  if (showPaymentForm) {
-    const totalFee = cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0;
-    
-    return (
-      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl max-w-md w-full p-8 text-center">
-          <h3 className="text-2xl font-bold text-slate-800 mb-4">Payment Required</h3>
-          <p className="text-slate-600 mb-6">
-            Your application has been submitted successfully. Please proceed to payment to complete your application.
-          </p>
-          <div className="mb-6">
-            <p className="text-lg font-semibold text-purple-600">
-              Total Amount: R{totalFee}
-            </p>
-          </div>
-          <div className="flex gap-4">
-            <button
-              onClick={() => setShowPaymentForm(false)}
-              className="flex-1 px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handlePayment}
-              className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-200"
-            >
-              Pay Now
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -310,7 +258,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
                   <h3 className="text-xl font-semibold text-slate-800">{selectedInstitution.name}</h3>
                   <p className="text-slate-600">{selectedInstitution.location} • {selectedInstitution.type}</p>
                   <p className="text-sm text-slate-500">Students: {selectedInstitution.students} • Established: {selectedInstitution.established}</p>
-                  <p className="text-lg font-semibold text-purple-600 mt-2">Application Fee: R{selectedInstitution.applicationFee}</p>
+                  <p className="text-lg font-semibold text-purple-600 mt-2">Base Application Fee: R{selectedInstitution.applicationFee}</p>
                 </div>
                 <button
                   onClick={handleAddToCart}
@@ -363,7 +311,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
                 </div>
               ))}
               <div className="border-t pt-3 mt-3">
-                <p className="font-semibold text-lg">Total Application Fee: R{getTotalFee()}</p>
+                <p className="font-semibold text-lg">Base Total: R{getTotalFee()}</p>
               </div>
             </div>
           )}
@@ -583,7 +531,36 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
             </div>
 
             <div className="border-t pt-6">
-              <h4 className="text-lg font-semibold text-slate-800 mb-4">Course Preferences</h4>
+              <h4 className="text-lg font-semibold text-slate-800 mb-4">Study Preferences</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Study Mode *</label>
+                  <select
+                    name="studyMode"
+                    value={formData.studyMode}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="fulltime">Full-time (+R500 processing fee)</option>
+                    <option value="parttime">Part-time (+R300 processing fee)</option>
+                    <option value="distance">Distance Learning</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Need Accommodation?</label>
+                  <select
+                    name="accommodation"
+                    value={formData.accommodation}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  >
+                    <option value="no">No</option>
+                    <option value="yes">Yes (+R200 processing fee)</option>
+                  </select>
+                </div>
+              </div>
+              
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">First Choice Course *</label>
@@ -622,10 +599,10 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
             <div className="border-t pt-6">
               <h4 className="text-lg font-semibold text-slate-800 mb-4">Document Upload</h4>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">ID Document Upload *</label>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Required Documents *</label>
                 <div className="border-2 border-dashed border-slate-300 rounded-xl p-6">
                   <FileUploaderRegular
-                    sourceList="local, camera"
+                    sourceList="local, camera, facebook, gdrive"
                     filesViewMode="grid"
                     gridShowFileNames={true}
                     classNameUploader="uc-purple"
@@ -636,17 +613,10 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
                     }}
                   />
                   {documentUrls.length > 0 && (
-                    <div className="mt-4">
-                      <p className="text-sm text-green-600 mb-2">✓ {documentUrls.length} document(s) uploaded</p>
-                      <div className="space-y-1">
-                        {documentUrls.map((url, index) => (
-                          <p key={index} className="text-xs text-slate-500 truncate">Document {index + 1}: {url}</p>
-                        ))}
-                      </div>
-                    </div>
+                    <p className="text-sm text-green-600 mt-2">✓ {documentUrls.length} document(s) uploaded</p>
                   )}
                 </div>
-                <p className="text-xs text-slate-500 mt-2">Please upload a clear copy of your ID document or passport</p>
+                <p className="text-xs text-slate-500 mt-2">Please upload: ID document, Matric certificate, Academic transcripts</p>
               </div>
             </div>
 
@@ -662,30 +632,49 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Need Accommodation?</label>
-                <select
-                  name="accommodation"
-                  value={formData.accommodation}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="no">No</option>
-                  <option value="yes">Yes</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">Need Financial Aid?</label>
-                <select
-                  name="financialAid"
-                  value={formData.financialAid}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                >
-                  <option value="no">No</option>
-                  <option value="yes">Yes</option>
-                </select>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Need Financial Aid?</label>
+              <select
+                name="financialAid"
+                value={formData.financialAid}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              >
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+              </select>
+            </div>
+
+            {/* Dynamic Amount Display */}
+            <div className="bg-purple-50 rounded-xl p-4">
+              <h4 className="font-semibold text-purple-800 mb-2">Total Application Fee</h4>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span>Base Application Fee:</span>
+                  <span>R{cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0}</span>
+                </div>
+                {formData.studyMode === 'fulltime' && (
+                  <div className="flex justify-between">
+                    <span>Full-time Processing Fee:</span>
+                    <span>R500</span>
+                  </div>
+                )}
+                {formData.studyMode === 'parttime' && (
+                  <div className="flex justify-between">
+                    <span>Part-time Processing Fee:</span>
+                    <span>R300</span>
+                  </div>
+                )}
+                {formData.accommodation === 'yes' && (
+                  <div className="flex justify-between">
+                    <span>Accommodation Processing Fee:</span>
+                    <span>R200</span>
+                  </div>
+                )}
+                <div className="border-t pt-2 flex justify-between font-bold text-lg">
+                  <span>Total Amount:</span>
+                  <span className="text-purple-600">R{calculateDynamicAmount()}</span>
+                </div>
               </div>
             </div>
 
@@ -701,7 +690,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ isOpen, onClose, sele
                 type="submit"
                 className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-200"
               >
-                {isSubmitting ? 'Submitting...' : `Submit Application (R${cartItems.length > 0 ? getTotalFee() : selectedInstitution?.applicationFee || 0})`}
+                Submit Application (R{calculateDynamicAmount()})
               </button>
             </div>
           </form>
